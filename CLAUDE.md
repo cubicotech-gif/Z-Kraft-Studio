@@ -53,6 +53,8 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 - `src/components/fx/` sound provider, Lenis, reduced-motion helpers
 - `src/components/ui/` shadcn-style primitives (`ArcadeButton`: `href` => link, else button; `LeverButton`: pull-down lever link, navigates immediately, animation never delays it)
 - `src/components/layout/` header (nav, always-visible quest CTA, mobile menu), sound toggle, `ScrollHealthBar` (boss-style HP: starts full, drains with scroll, "CLEARED" at bottom; ref+rAF, no re-renders)
+- `src/components/services/` loot-rarity cards (`--r`/`--g` vars + `.rarity-glow`; glow is a filter on a wrapper because chamfer clips shadows). Tier CTAs link to `/?tier=<id>#quest` for the order form to read
+- `src/components/fx/scroll-reveal.tsx` GSAP/ScrollTrigger reveal for `[data-reveal]` children (imported only near the viewport; skipped for reduced motion)
 - `src/components/intro/` Press Start loader (head script sets `html[data-intro]`; CSS-only failsafe ends it by ~2s)
 
 `src/app/page.tsx` has placeholder `Stub` sections (#loot, #inventory, #quest) so nav anchors work; replace each as the real section lands. Anchors rely on `scroll-mt-16` for the fixed header (don't also add a Lenis offset: it stacks).
@@ -64,7 +66,7 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 1. [x] Project, tokens, hero (crosshair, arrows, shake, touch auto-fire), arcade button, sound provider
 2. [x] Press Start intro (≤2s, skippable, once per session)
 3. [x] HUD navbar + scroll health bar; pull-down lever CTA
-4. [ ] Services as loot rarity cards
+4. [x] Services as loot rarity cards (prices/contents in `src/lib/services.ts` are PLACEHOLDERS)
 5. [ ] Portfolio inventory grid + loot-crate reveal + lightbox
 6. [ ] Quest Log order form + XP bar + Supabase table/storage
 7. [ ] Achievement toasts, Konami discount code

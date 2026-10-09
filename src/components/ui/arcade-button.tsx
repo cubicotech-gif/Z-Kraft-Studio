@@ -63,7 +63,7 @@ export function ArcadeButton({
       <span aria-hidden className={cn("chamfer absolute inset-0 translate-y-1.5", v.base)} />
       <span
         className={cn(
-          "chamfer relative flex min-h-12 w-full items-center justify-center gap-2 whitespace-nowrap px-7 sm:min-h-14",
+          "chamfer relative flex min-h-12 w-full items-center justify-center gap-2 whitespace-nowrap px-5 sm:min-h-14",
           "font-hud text-sm font-bold uppercase tracking-[0.18em] sm:text-base",
           "transition-[transform,filter] duration-75 ease-out group-hover:brightness-110 group-active:translate-y-[5px]",
           v.cap,

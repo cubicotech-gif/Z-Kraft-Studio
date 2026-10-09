@@ -153,6 +153,23 @@
   .chamfer-sm {
     --cut: 8px;
   }
+  /* loot-rarity glow: set --r (colour) and --g (blur px) on the element. Filter, not
+     box-shadow, so it follows the clipped (chamfered) outline. */
+  .rarity-glow {
+    filter: drop-shadow(0 0 var(--g, 10px) color-mix(in oklab, var(--r) 55%, transparent));
+  }
+  .rarity-pulse {
+    animation: rarity-pulse 3.2s ease-in-out infinite;
+  }
+  .rarity-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 40%, color-mix(in oklab, var(--r) 28%, transparent) 50%, transparent 60%);
+    background-size: 250% 100%;
+    animation: rarity-shimmer 4.5s linear infinite;
+  }
   .text-glow-magenta {
     text-shadow: 0 0 18px color-mix(in oklab, var(--neon-magenta) 70%, transparent);
   }
@@ -241,5 +258,19 @@ html:not([data-intro]) .intro {
   to {
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+@keyframes rarity-pulse {
+  50% {
+    filter: drop-shadow(0 0 calc(var(--g, 10px) * 1.7) color-mix(in oklab, var(--r) 75%, transparent));
+  }
+}
+@keyframes rarity-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -100% 0;
   }
 }
