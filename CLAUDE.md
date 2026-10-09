@@ -43,7 +43,7 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
    `components/fx/use-reduced-motion`; CSS motion is also zeroed globally.
 4. **Lazy-load heavy animation** (GSAP, Lenis, arrow engine) via dynamic `import()` after idle or on
    first interaction. Keep the initial bundle lean.
-5. **Lighthouse performance ≥ 90 on mobile.** Last measured: 94–96 with intro active (a11y/BP/SEO 100). Re-check after each section.
+5. **Lighthouse performance ≥ 90 on mobile.** Last measured: 94–96 (median of 6; first cold run once hit 79) with intro active (a11y/BP/SEO 100). Re-check after each section.
 6. **Sound is muted by default** and opt-in via the header toggle (`useSound()`); synthesised, no audio files.
 7. Everything in the hero background is CSS: avoid image requests above the fold.
 
@@ -51,9 +51,11 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 - `src/app/` routes, layout (fonts, providers), globals.css (tokens)
 - `src/components/hero/` hero content (server) + `HeroArena` (client: crosshair, arrows, shake)
 - `src/components/fx/` sound provider, Lenis, reduced-motion helpers
-- `src/components/ui/` shadcn-style primitives (`ArcadeButton`: `href` => link, else button)
-- `src/components/layout/` header, sound toggle
+- `src/components/ui/` shadcn-style primitives (`ArcadeButton`: `href` => link, else button; `LeverButton`: pull-down lever link, navigates immediately, animation never delays it)
+- `src/components/layout/` header (nav, always-visible quest CTA, mobile menu), sound toggle, `ScrollHealthBar` (boss-style HP: starts full, drains with scroll, "CLEARED" at bottom; ref+rAF, no re-renders)
 - `src/components/intro/` Press Start loader (head script sets `html[data-intro]`; CSS-only failsafe ends it by ~2s)
+
+`src/app/page.tsx` has placeholder `Stub` sections (#loot, #inventory, #quest) so nav anchors work; replace each as the real section lands. Anchors rely on `scroll-mt-16` for the fixed header (don't also add a Lenis offset: it stacks).
 
 ## Commands
 `npm run dev` · `npm run build` · `npm run lint` · `npx tsc --noEmit`
@@ -61,7 +63,7 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 ## Roadmap (build order)
 1. [x] Project, tokens, hero (crosshair, arrows, shake, touch auto-fire), arcade button, sound provider
 2. [x] Press Start intro (≤2s, skippable, once per session)
-3. [ ] HUD navbar + scroll health bar; pull-down lever CTA
+3. [x] HUD navbar + scroll health bar; pull-down lever CTA
 4. [ ] Services as loot rarity cards
 5. [ ] Portfolio inventory grid + loot-crate reveal + lightbox
 6. [ ] Quest Log order form + XP bar + Supabase table/storage
