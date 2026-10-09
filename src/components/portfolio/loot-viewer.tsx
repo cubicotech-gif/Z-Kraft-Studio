@@ -151,7 +151,7 @@ function ViewerBody({
           <p className="mt-1 text-sm text-ink-dim">{item.blurb}</p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <ArcadeButton href={`/?tier=${item.rarity}#quest`} variant="magenta" wrap onClick={onClose} className="min-w-0 flex-1 basis-48">
+            <ArcadeButton href={`/order?tier=${item.rarity}`} variant="magenta" wrap onClick={onClose} className="min-w-0 flex-1 basis-48">
               Commission something like this
             </ArcadeButton>
             <div className="ml-auto flex gap-2">

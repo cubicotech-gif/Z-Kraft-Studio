@@ -2,13 +2,23 @@
 
 import { useEffect, useId, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useSound } from "@/components/fx/sound-provider";
+import { NAV } from "@/lib/site";
 
-export function MobileMenu({ links }: { links: { label: string; href: string }[] }) {
+export function MobileMenu() {
   const [open, setOpen] = useState(false);
+  const [lastPath, setLastPath] = useState<string | null>(null);
+  const path = usePathname();
   const id = useId();
   const { play } = useSound();
+
+  // Close whenever the route changes.
+  if (path !== lastPath) {
+    setLastPath(path);
+    if (open) setOpen(false);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -17,8 +27,9 @@ export function MobileMenu({ links }: { links: { label: string; href: string }[]
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  const row = "flex min-h-12 items-center border-b border-void-700 font-hud text-sm font-semibold uppercase tracking-[0.25em] hover:text-neon-cyan";
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         data-no-arrow
@@ -37,20 +48,26 @@ export function MobileMenu({ links }: { links: { label: string; href: string }[]
         id={id}
         aria-label="Primary"
         hidden={!open}
-        className="absolute inset-x-0 top-full z-10 border-b border-neon-violet/30 bg-void-950 px-4 py-2"
+        className="absolute inset-x-0 top-full z-10 max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-neon-violet/30 bg-void-950 px-4 py-2"
       >
         <ul>
-          {links.map((l) => (
-            <li key={l.href}>
-              <Link
-                href={l.href}
-                data-no-arrow
-                onClick={() => setOpen(false)}
-                className="flex min-h-12 items-center border-b border-void-700 font-hud text-sm font-semibold uppercase tracking-[0.25em] text-ink last:border-b-0 hover:text-neon-cyan"
-              >
+          {NAV.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} data-no-arrow aria-current={path === item.href ? "page" : undefined} className={`${row} text-ink aria-[current=page]:text-neon-cyan`}>
                 <span aria-hidden className="mr-3 text-neon-magenta">▸</span>
-                {l.label}
+                {item.label}
               </Link>
+              {item.children && (
+                <ul className="mb-1 ml-5 border-l border-void-600">
+                  {item.children.map((c) => (
+                    <li key={c.href}>
+                      <Link href={c.href} data-no-arrow aria-current={path === c.href ? "page" : undefined} className="flex min-h-11 items-center pl-4 text-sm text-ink-dim hover:text-neon-cyan aria-[current=page]:text-neon-cyan">
+                        {c.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>

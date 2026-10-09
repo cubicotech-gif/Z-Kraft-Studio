@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Oxanium, Chakra_Petch, Geist } from "next/font/google";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { SoundProvider } from "@/components/fx/sound-provider";
 import { PressStart } from "@/components/intro/press-start";
 import { SmoothScroll } from "@/components/fx/smooth-scroll";
@@ -10,7 +12,7 @@ const display = Oxanium({ variable: "--f-display", subsets: ["latin"], weight: [
 const hud = Chakra_Petch({ variable: "--f-hud", subsets: ["latin"], weight: ["500", "600", "700"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Z Kraft Studio — Custom art for gamers & streamers",
+  title: { default: "Z Kraft Studio — Custom art for gamers & streamers", template: "%s | Z Kraft Studio" },
   description:
     "Emotes, sub badges, stream panels and character illustrations built from your own inspirations. Accept the quest.",
 };
@@ -37,7 +39,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SoundProvider>
           <PressStart />
           <SmoothScroll />
+          <SiteHeader />
           {children}
+          <SiteFooter />
         </SoundProvider>
       </body>
     </html>

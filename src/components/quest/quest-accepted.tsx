@@ -6,9 +6,9 @@ export function QuestAccepted({ id, email, onReset }: { id: string; email: strin
     <div role="status" className="drop-in relative overflow-hidden text-center" style={{ "--r": "var(--neon-lime)" } as React.CSSProperties}>
       <div aria-hidden className="crate-burst pointer-events-none absolute left-1/2 top-24 size-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,var(--r),transparent_65%)]" />
       <p className="relative font-hud text-xs font-bold uppercase tracking-[0.35em] text-neon-lime">Level up!</p>
-      <h3 className="relative mt-3 font-display text-4xl font-extrabold uppercase leading-none tracking-tight text-ink text-glow-cyan sm:text-6xl">
+      <h2 className="relative mt-3 font-display text-4xl font-extrabold uppercase leading-none tracking-tight text-ink text-glow-cyan sm:text-6xl">
         Quest <span className="text-neon-lime">accepted</span>
-      </h3>
+      </h2>
       <p className="relative mx-auto mt-5 max-w-md text-ink-dim">
         Your order is in. We&apos;ll reach out at <span className="text-ink">{email}</span> to confirm details and next steps.
       </p>

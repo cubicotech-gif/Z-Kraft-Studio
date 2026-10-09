@@ -39,10 +39,10 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <ArcadeButton href="#quest" variant="magenta" className="sm:min-w-56">
+            <ArcadeButton href="/order" variant="magenta" className="sm:min-w-56">
               Start quest <ArrowRight className="size-5" aria-hidden />
             </ArcadeButton>
-            <ArcadeButton href="#loot" variant="ghost">
+            <ArcadeButton href="/services" variant="ghost">
               Browse loot
             </ArcadeButton>
           </div>

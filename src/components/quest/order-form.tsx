@@ -227,12 +227,12 @@ export function OrderForm() {
             <form onSubmit={onSubmit} noValidate aria-busy={phase === "sending"}>
               <XpBar value={(step - 1) / 4} label={`Step ${step}/4 · ${STEP_LABEL[step]}`} />
 
-              <h3 ref={heading} tabIndex={-1} className="mt-6 font-display text-2xl font-extrabold tracking-tight outline-none sm:text-3xl">
+              <h2 ref={heading} tabIndex={-1} className="mt-6 font-display text-2xl font-extrabold tracking-tight outline-none sm:text-3xl">
                 {step === 1 && "Choose your quest"}
                 {step === 2 && "Show us your inspiration"}
                 {step === 3 && "Describe the character"}
                 {step === 4 && "Where do we send the loot?"}
-              </h3>
+              </h2>
 
               <div className="mt-6">
                 {step === 1 && (

@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { SoundToggle } from "./sound-toggle";
 import { MobileMenu } from "./mobile-menu";
+import { DesktopNav } from "./desktop-nav";
 import { ScrollHealthBar } from "./scroll-health-bar";
 
-const NAV = [
-  { label: "Loot", href: "#loot" },
-  { label: "Inventory", href: "#inventory" },
-  { label: "Quest log", href: "#quest" },
-];
-
-/** HUD bar: logo, nav, always-visible quest CTA, sound toggle, scroll HP bar. */
+/** HUD bar: logo, nav (dropdown on desktop, menu on mobile), always-visible quest CTA, sound, scroll HP bar. */
 export function SiteHeader() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-void-950/85 backdrop-blur">
@@ -21,22 +16,11 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="ml-6 hidden items-center md:flex">
-          {NAV.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              data-no-arrow
-              className="px-4 py-3 font-hud text-xs font-semibold uppercase tracking-[0.25em] text-ink-dim transition-colors hover:text-neon-cyan"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
+        <DesktopNav />
 
         <div className="ml-auto flex items-center gap-2">
           <Link
-            href="#quest"
+            href="/order"
             data-no-arrow
             className="chamfer chamfer-sm inline-flex h-11 items-center bg-neon-magenta px-4 font-hud text-xs font-bold uppercase tracking-[0.18em] text-void-950 transition-[filter] hover:brightness-110 active:brightness-90"
           >
@@ -44,7 +28,7 @@ export function SiteHeader() {
             <span className="hidden sm:inline">Start quest</span>
           </Link>
           <SoundToggle />
-          <MobileMenu links={NAV} />
+          <MobileMenu />
         </div>
       </div>
       <ScrollHealthBar />
