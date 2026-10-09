@@ -1,26 +1,203 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+/* ------------------------------------------------------------------
+   Z KRAFT STUDIO — design tokens
+   Dark neon + pixel accents. Original palette; no borrowed game UI.
+   ------------------------------------------------------------------ */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  /* surfaces ("the void") */
+  --void-950: #07050f;
+  --void-900: #0d0a1c;
+  --void-800: #150f2b;
+  --void-700: #20173f;
+  --void-600: #2e2358;
+
+  /* neon */
+  --neon-magenta: #ff2bd6;
+  --neon-cyan: #22e6ff;
+  --neon-lime: #b6ff3c;
+  --neon-violet: #8b5cff;
+  --neon-amber: #ffb020;
+
+  /* loot rarity tiers */
+  --rarity-common: #9aa4c4;
+  --rarity-rare: #3aa0ff;
+  --rarity-epic: #b052ff;
+  --rarity-legendary: #ffb020;
+
+  /* text */
+  --ink: #f2ecff;
+  --ink-dim: #a99fd0;
+
+  /* shadcn/ui semantic tokens (mapped onto the palette above) */
+  --background: var(--void-950);
+  --foreground: var(--ink);
+  --card: var(--void-900);
+  --card-foreground: var(--ink);
+  --popover: var(--void-800);
+  --popover-foreground: var(--ink);
+  --primary: var(--neon-magenta);
+  --primary-foreground: var(--void-950);
+  --secondary: var(--void-700);
+  --secondary-foreground: var(--ink);
+  --muted: var(--void-800);
+  --muted-foreground: var(--ink-dim);
+  --accent: var(--neon-cyan);
+  --accent-foreground: var(--void-950);
+  --destructive: #ff4d6d;
+  --border: var(--void-600);
+  --input: var(--void-700);
+  --ring: var(--neon-cyan);
+  --radius: 0.25rem; /* pixel UI: nearly square */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-void-950: var(--void-950);
+  --color-void-900: var(--void-900);
+  --color-void-800: var(--void-800);
+  --color-void-700: var(--void-700);
+  --color-void-600: var(--void-600);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+
+  --color-neon-magenta: var(--neon-magenta);
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-lime: var(--neon-lime);
+  --color-neon-violet: var(--neon-violet);
+  --color-neon-amber: var(--neon-amber);
+
+  --color-common: var(--rarity-common);
+  --color-rare: var(--rarity-rare);
+  --color-epic: var(--rarity-epic);
+  --color-legendary: var(--rarity-legendary);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+
+  --font-sans: var(--f-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--f-display), ui-monospace, monospace;
+  --font-hud: var(--f-hud), ui-monospace, monospace;
+
+  /* rarity + neon glows */
+  --shadow-glow-magenta: 0 0 0 2px var(--neon-magenta), 0 0 24px 2px color-mix(in oklab, var(--neon-magenta) 55%, transparent);
+  --shadow-glow-cyan: 0 0 0 2px var(--neon-cyan), 0 0 24px 2px color-mix(in oklab, var(--neon-cyan) 55%, transparent);
+  --shadow-glow-common: 0 0 0 2px var(--rarity-common), 0 0 18px 0 color-mix(in oklab, var(--rarity-common) 35%, transparent);
+  --shadow-glow-rare: 0 0 0 2px var(--rarity-rare), 0 0 26px 2px color-mix(in oklab, var(--rarity-rare) 55%, transparent);
+  --shadow-glow-epic: 0 0 0 2px var(--rarity-epic), 0 0 30px 4px color-mix(in oklab, var(--rarity-epic) 60%, transparent);
+  --shadow-glow-legendary: 0 0 0 2px var(--rarity-legendary), 0 0 36px 6px color-mix(in oklab, var(--rarity-legendary) 65%, transparent);
+
+  --animate-blink: blink 1.1s steps(2, jump-none) infinite;
+  @keyframes blink {
+    to {
+      opacity: 0;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    background: var(--void-950);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    outline: 2px solid var(--neon-cyan);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--neon-magenta);
+    color: var(--void-950);
+  }
+}
+
+/* ---------------- pixel utilities ---------------- */
+@layer utilities {
+  /* stair-stepped corners without images (crisp at any size) */
+  .pixel-clip {
+    clip-path: polygon(
+      0 6px, 3px 6px, 3px 3px, 6px 3px, 6px 0,
+      calc(100% - 6px) 0, calc(100% - 6px) 3px, calc(100% - 3px) 3px, calc(100% - 3px) 6px, 100% 6px,
+      100% calc(100% - 6px), calc(100% - 3px) calc(100% - 6px), calc(100% - 3px) calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 6px) 100%,
+      6px 100%, 6px calc(100% - 3px), 3px calc(100% - 3px), 3px calc(100% - 6px), 0 calc(100% - 6px)
+    );
+  }
+  .text-glow-magenta {
+    text-shadow: 0 0 18px color-mix(in oklab, var(--neon-magenta) 70%, transparent);
+  }
+  .text-glow-cyan {
+    text-shadow: 0 0 18px color-mix(in oklab, var(--neon-cyan) 70%, transparent);
+  }
+  .pixel-render {
+    image-rendering: pixelated;
+  }
+  /* hero background: neon grid fading to void. CSS only => no LCP cost */
+  .bg-neon-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--neon-violet) 18%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--neon-violet) 18%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 75%);
+  }
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.12) 2px 3px);
+    mix-blend-mode: multiply;
+  }
+}
+
+/* ---------------- custom cursor (fine pointers only) ---------------- */
+@media (hover: hover) and (pointer: fine) {
+  .hero-arena {
+    cursor: none;
+  }
+  .hero-arena :is(a, button, [data-no-arrow]) {
+    cursor: pointer;
+  }
+}
+
+/* ---------------- reduced motion ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
