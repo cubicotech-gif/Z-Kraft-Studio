@@ -1,59 +1,93 @@
 "use client";
 
-import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useSound } from "@/components/fx/sound-provider";
 
 /**
- * Chunky arcade button: a coloured cap sitting on a dark base. Pressing sinks the
- * cap into the base (translate + shrinking shadow). Pure CSS, so it costs no JS
- * animation and works with prefers-reduced-motion (transitions are zeroed globally).
+ * Arcade button: a chamfered coloured cap sitting on a darker base. Pressing sinks the cap
+ * into the base. Structure matters: clip-path clips shadows, so the depth is a real second
+ * layer and the glow is a drop-shadow filter on the unclipped wrapper.
+ * Pure CSS motion (transitions are zeroed under prefers-reduced-motion).
  */
-const arcadeButton = cva(
-  [
-    "group relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap",
-    "font-hud uppercase tracking-wider text-sm sm:text-base font-bold",
-    "px-6 min-h-12 sm:min-h-14 pixel-clip",
-    "translate-y-0 transition-[transform,box-shadow,filter] duration-75 ease-out",
-    "active:translate-y-[5px]",
-    "[-webkit-tap-highlight-color:transparent] touch-manipulation",
-    "disabled:pointer-events-none disabled:opacity-50",
-  ],
-  {
-    variants: {
-      variant: {
-        magenta:
-          "bg-neon-magenta text-void-950 shadow-[0_6px_0_0_#8a0f74,0_0_28px_-4px_var(--neon-magenta)] hover:brightness-110 active:shadow-[0_1px_0_0_#8a0f74,0_0_18px_-4px_var(--neon-magenta)]",
-        cyan:
-          "bg-neon-cyan text-void-950 shadow-[0_6px_0_0_#0a7f8f,0_0_28px_-4px_var(--neon-cyan)] hover:brightness-110 active:shadow-[0_1px_0_0_#0a7f8f,0_0_18px_-4px_var(--neon-cyan)]",
-        ghost:
-          "bg-void-800 text-ink shadow-[0_6px_0_0_var(--void-600)] hover:bg-void-700 active:shadow-[0_1px_0_0_var(--void-600)]",
-      },
-    },
-    defaultVariants: { variant: "magenta" },
+const VARIANTS = {
+  magenta: {
+    cap: "bg-neon-magenta text-void-950",
+    base: "bg-[#8a0f74]",
+    glow: "[filter:drop-shadow(0_0_14px_color-mix(in_oklab,var(--neon-magenta)_55%,transparent))]",
   },
-);
+  cyan: {
+    cap: "bg-neon-cyan text-void-950",
+    base: "bg-[#0a7f8f]",
+    glow: "[filter:drop-shadow(0_0_14px_color-mix(in_oklab,var(--neon-cyan)_55%,transparent))]",
+  },
+  ghost: {
+    cap: "bg-void-700 text-ink",
+    base: "bg-void-600",
+    glow: "",
+  },
+} as const;
 
-export interface ArcadeButtonProps
-  extends React.ComponentProps<"button">,
-    VariantProps<typeof arcadeButton> {
-  asChild?: boolean;
-}
+export type ArcadeButtonProps = {
+  variant?: keyof typeof VARIANTS;
+  className?: string;
+  children: React.ReactNode;
+  /** With href it renders a link (next/link); otherwise a <button>. */
+  href?: string;
+  type?: "button" | "submit";
+  disabled?: boolean;
+  onClick?: () => void;
+  "aria-label"?: string;
+};
 
-export function ArcadeButton({ className, variant, asChild, onClick, ...props }: ArcadeButtonProps) {
+export function ArcadeButton({
+  variant = "magenta",
+  className,
+  children,
+  href,
+  type = "button",
+  disabled,
+  onClick,
+  "aria-label": ariaLabel,
+}: ArcadeButtonProps) {
   const { play } = useSound();
-  const Comp = asChild ? Slot : "button";
+  const v = VARIANTS[variant];
+  const root = cn(
+    "group relative mb-1.5 inline-flex select-none touch-manipulation [-webkit-tap-highlight-color:transparent]",
+    "disabled:pointer-events-none disabled:opacity-50",
+    v.glow,
+    className,
+  );
+  const inner = (
+    <>
+      <span aria-hidden className={cn("chamfer absolute inset-0 translate-y-1.5", v.base)} />
+      <span
+        className={cn(
+          "chamfer relative flex min-h-12 w-full items-center justify-center gap-2 whitespace-nowrap px-7 sm:min-h-14",
+          "font-hud text-sm font-bold uppercase tracking-[0.18em] sm:text-base",
+          "transition-[transform,filter] duration-75 ease-out group-hover:brightness-110 group-active:translate-y-[5px]",
+          v.cap,
+        )}
+      >
+        {children}
+      </span>
+    </>
+  );
+  const handle = () => {
+    play("click");
+    onClick?.();
+  };
+
+  if (href !== undefined) {
+    return (
+      <Link href={href} data-no-arrow aria-label={ariaLabel} className={root} onClick={handle}>
+        {inner}
+      </Link>
+    );
+  }
   return (
-    <Comp
-      data-no-arrow
-      className={cn(arcadeButton({ variant }), className)}
-      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-        play("click");
-        onClick?.(e);
-      }}
-      {...props}
-    />
+    <button type={type} data-no-arrow aria-label={ariaLabel} disabled={disabled} className={root} onClick={handle}>
+      {inner}
+    </button>
   );
 }

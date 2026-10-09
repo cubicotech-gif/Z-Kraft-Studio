@@ -6,13 +6,14 @@
 import { animate } from "motion/mini";
 
 const MAX_ARROWS = 14;
-const ARROW_W = 64;
-const ARROW_H = 28;
+const ARROW_W = 84;
+const ARROW_H = 18;
 
-const ARROW_SVG = `<svg viewBox="0 0 16 7" width="${ARROW_W}" height="${ARROW_H}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
-<g fill="#ff2bd6"><rect x="0" y="0" width="1" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/></g>
-<rect x="3" y="3" width="10" height="1" fill="#f2ecff"/>
-<g fill="#22e6ff"><rect x="13" y="1" width="1" height="5"/><rect x="14" y="2" width="1" height="3"/><rect x="15" y="3" width="1" height="1"/></g>
+// Sleek vector bolt: magenta vanes, light shaft, cyan head. Tip sits on the right edge.
+const ARROW_SVG = `<svg viewBox="0 0 84 18" width="${ARROW_W}" height="${ARROW_H}" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 2h9l6 7-6 7H0l6-7z" fill="#ff2bd6"/><path d="M11 3h6l5 6-5 6h-6l5-6z" fill="#ff2bd6" opacity=".6"/>
+<path d="M14 9h54" stroke="#f2ecff" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M66 2l18 7-18 7 4-7z" fill="#22e6ff"/>
 </svg>`;
 
 export type Fire = { layer: HTMLElement; shake: HTMLElement; x: number; y: number; reduced: boolean };
@@ -28,7 +29,7 @@ export function fireArrow({ layer, shake, x, y, reduced }: Fire) {
   const wrap = document.createElement("div");
   wrap.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:0;height:0;`;
   const arrow = document.createElement("div");
-  arrow.style.cssText = `position:absolute;left:${-ARROW_W}px;top:${-ARROW_H / 2}px;width:${ARROW_W}px;height:${ARROW_H}px;transform-origin:100% 50%;transform:rotate(${angle}deg);filter:drop-shadow(0 0 6px rgba(34,230,255,.7));`;
+  arrow.style.cssText = `position:absolute;left:${-ARROW_W}px;top:${-ARROW_H / 2}px;width:${ARROW_W}px;height:${ARROW_H}px;transform-origin:100% 50%;transform:rotate(${angle}deg);filter:drop-shadow(0 0 5px rgba(34,230,255,.8));`;
   arrow.innerHTML = ARROW_SVG;
   wrap.appendChild(arrow);
   layer.appendChild(wrap);

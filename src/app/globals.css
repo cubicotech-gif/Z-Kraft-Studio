@@ -3,7 +3,7 @@
 
 /* ------------------------------------------------------------------
    Z KRAFT STUDIO — design tokens
-   Dark neon + pixel accents. Original palette; no borrowed game UI.
+   Dark neon + angular cyber-HUD (chamfered corners, thin neon lines). Original palette; no borrowed game UI.
    ------------------------------------------------------------------ */
 
 :root {
@@ -52,7 +52,7 @@
   --border: var(--void-600);
   --input: var(--void-700);
   --ring: var(--neon-cyan);
-  --radius: 0.25rem; /* pixel UI: nearly square */
+  --radius: 0.125rem; /* HUD UI: near-square; shape comes from .chamfer */
 }
 
 @theme inline {
@@ -142,25 +142,22 @@
   }
 }
 
-/* ---------------- pixel utilities ---------------- */
+/* ---------------- HUD utilities ---------------- */
 @layer utilities {
-  /* stair-stepped corners without images (crisp at any size) */
-  .pixel-clip {
-    clip-path: polygon(
-      0 6px, 3px 6px, 3px 3px, 6px 3px, 6px 0,
-      calc(100% - 6px) 0, calc(100% - 6px) 3px, calc(100% - 3px) 3px, calc(100% - 3px) 6px, 100% 6px,
-      100% calc(100% - 6px), calc(100% - 3px) calc(100% - 6px), calc(100% - 3px) calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 6px) 100%,
-      6px 100%, 6px calc(100% - 3px), 3px calc(100% - 3px), 3px calc(100% - 6px), 0 calc(100% - 6px)
-    );
+  /* angled corners (top-right + bottom-left cut). NOTE: clip-path also clips
+     box-shadow/outline, so put glows on a wrapper via filter: drop-shadow. */
+  .chamfer {
+    --cut: 14px;
+    clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+  }
+  .chamfer-sm {
+    --cut: 8px;
   }
   .text-glow-magenta {
     text-shadow: 0 0 18px color-mix(in oklab, var(--neon-magenta) 70%, transparent);
   }
   .text-glow-cyan {
     text-shadow: 0 0 18px color-mix(in oklab, var(--neon-cyan) 70%, transparent);
-  }
-  .pixel-render {
-    image-rendering: pixelated;
   }
   /* hero background: neon grid fading to void. CSS only => no LCP cost */
   .bg-neon-grid {
@@ -199,5 +196,50 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------- Press Start intro ---------------- */
+@property --pct {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+/* The overlay only exists visually when the head script sets html[data-intro]. */
+html:not([data-intro]) .intro {
+  display: none;
+}
+/* CSS-only failsafe: gone by ~2s even if JS never hydrates. */
+.intro {
+  animation: intro-out 0.3s ease-in 1.7s forwards;
+  transition: opacity 0.18s ease-out;
+}
+.intro.is-leaving {
+  opacity: 0;
+}
+.intro-fill {
+  animation: intro-fill 1.55s steps(24, end) forwards;
+}
+.intro-pct {
+  animation: intro-pct 1.55s steps(24, end) forwards;
+  counter-reset: pct var(--pct);
+}
+.intro-pct::after {
+  content: counter(pct) "%";
+}
+@keyframes intro-fill {
+  to {
+    width: 100%;
+  }
+}
+@keyframes intro-pct {
+  to {
+    --pct: 100;
+  }
+}
+@keyframes intro-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
   }
 }

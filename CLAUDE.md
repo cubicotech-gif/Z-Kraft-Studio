@@ -7,7 +7,8 @@ illustrations built from the client's own inspirations.
 
 ## Concept: the site is a game
 The visitor is a **player**; commissioning art is a **quest**. Visual style is original dark neon +
-pixel accents. Never copy a real game's UI, fonts, characters or iconography.
+an angular cyber-HUD look (chamfered corners, thin neon lines, vector reticle/arrows; NOT pixel art).
+Never copy a real game's UI, fonts, characters or iconography.
 
 Vocabulary to keep consistent in copy and UI: Press Start, Quest / Quest Log, XP bar, Health bar
 (scroll progress), Loot / Loot rarity (pricing), Inventory (portfolio), Achievements, Level up.
@@ -29,8 +30,8 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 - Surfaces `void-950…600`; text `ink`, `ink-dim`
 - Neon: `neon-magenta` (primary), `neon-cyan` (accent/focus), `neon-lime`, `neon-violet`, `neon-amber`
 - Rarity: `common`, `rare`, `epic`, `legendary`, each with a `shadow-glow-*` utility
-- Fonts: `font-display` (Pixelify Sans, headlines), `font-hud` (Silkscreen, labels/buttons), `font-sans` (Geist, body)
-- Helpers: `pixel-clip` (stair-step corners), `bg-neon-grid`, `scanlines`, `text-glow-*`
+- Fonts: `font-display` (Oxanium, headlines), `font-hud` (Chakra Petch, labels/buttons), `font-sans` (Geist, body)
+- Helpers: `chamfer` / `chamfer-sm` (angled corners; clip-path clips shadows, so use a drop-shadow filter on a wrapper), `bg-neon-grid`, `scanlines`, `text-glow-*`
 - shadcn semantic vars (`--primary`, `--border`, …) are mapped onto this palette. Dark theme only.
 
 ## Hard rules
@@ -42,7 +43,7 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
    `components/fx/use-reduced-motion`; CSS motion is also zeroed globally.
 4. **Lazy-load heavy animation** (GSAP, Lenis, arrow engine) via dynamic `import()` after idle or on
    first interaction. Keep the initial bundle lean.
-5. **Lighthouse performance ≥ 90 on mobile.** Last measured: 96 (a11y/BP/SEO 100). Re-check after each section.
+5. **Lighthouse performance ≥ 90 on mobile.** Last measured: 94–96 with intro active (a11y/BP/SEO 100). Re-check after each section.
 6. **Sound is muted by default** and opt-in via the header toggle (`useSound()`); synthesised, no audio files.
 7. Everything in the hero background is CSS: avoid image requests above the fold.
 
@@ -50,15 +51,16 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 - `src/app/` routes, layout (fonts, providers), globals.css (tokens)
 - `src/components/hero/` hero content (server) + `HeroArena` (client: crosshair, arrows, shake)
 - `src/components/fx/` sound provider, Lenis, reduced-motion helpers
-- `src/components/ui/` shadcn-style primitives (`ArcadeButton`)
+- `src/components/ui/` shadcn-style primitives (`ArcadeButton`: `href` => link, else button)
 - `src/components/layout/` header, sound toggle
+- `src/components/intro/` Press Start loader (head script sets `html[data-intro]`; CSS-only failsafe ends it by ~2s)
 
 ## Commands
 `npm run dev` · `npm run build` · `npm run lint` · `npx tsc --noEmit`
 
 ## Roadmap (build order)
 1. [x] Project, tokens, hero (crosshair, arrows, shake, touch auto-fire), arcade button, sound provider
-2. [ ] Press Start intro (≤2s, skippable, once per session)
+2. [x] Press Start intro (≤2s, skippable, once per session)
 3. [ ] HUD navbar + scroll health bar; pull-down lever CTA
 4. [ ] Services as loot rarity cards
 5. [ ] Portfolio inventory grid + loot-crate reveal + lightbox

@@ -21,14 +21,14 @@ export function Hero() {
 
       <HeroArena>
         <div className="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 pb-20 pt-28 sm:px-6">
-          <p className="font-hud text-xs tracking-[0.25em] text-neon-lime sm:text-sm">
-            PLAYER 1 <span className="animate-blink">▮</span> NEW QUEST AVAILABLE
+          <p className="font-hud text-xs font-semibold tracking-[0.3em] text-neon-lime sm:text-sm">
+            PLAYER 1 <span className="mx-1 inline-block size-2 animate-blink bg-neon-lime align-middle" /> NEW QUEST AVAILABLE
           </p>
 
           <h1
             id="hero-title"
             data-arrow-target
-            className="mt-5 max-w-4xl font-display text-[clamp(2.6rem,10.5vw,6.5rem)] font-bold leading-[0.98] tracking-tight text-ink"
+            className="mt-5 max-w-4xl font-display text-[clamp(2.6rem,10.5vw,6.5rem)] font-extrabold leading-[0.98] tracking-tight text-ink"
           >
             Custom art that <span className="text-neon-magenta text-glow-magenta">levels up</span> your stream.
           </h1>
@@ -39,27 +39,25 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <ArcadeButton asChild variant="magenta" className="sm:min-w-56">
-              <a href="#quest">
-                Start quest <ArrowRight className="size-5" aria-hidden />
-              </a>
+            <ArcadeButton href="#quest" variant="magenta" className="sm:min-w-56">
+              Start quest <ArrowRight className="size-5" aria-hidden />
             </ArcadeButton>
-            <ArcadeButton asChild variant="ghost">
-              <a href="#loot">Browse loot</a>
+            <ArcadeButton href="#loot" variant="ghost">
+              Browse loot
             </ArcadeButton>
           </div>
 
           <ul className="mt-10 flex flex-wrap gap-2" aria-label="What we make">
             {QUESTS.map((q) => (
-              <li key={q.label} className={`border-2 bg-void-900/70 px-3 py-1 font-hud text-xs uppercase tracking-wider ${q.color}`}>
+              <li key={q.label} className={`border bg-void-900/70 px-3 py-1.5 font-hud text-xs font-semibold uppercase tracking-[0.18em] ${q.color}`}>
                 {q.label}
               </li>
             ))}
           </ul>
 
           <p aria-hidden className="mt-8 font-hud text-xs tracking-widest text-ink-dim/70">
-            <span className="hidden pointer-fine:inline">[ CLICK ANYWHERE TO FIRE ]</span>
-            <span className="pointer-fine:hidden">[ TAP TO FIRE ]</span>
+            <span className="hidden pointer-fine:inline">{"// CLICK ANYWHERE TO FIRE"}</span>
+            <span className="pointer-fine:hidden">{"// TAP TO FIRE"}</span>
           </p>
         </div>
       </HeroArena>
