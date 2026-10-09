@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/layout/site-header";
 import { Hero } from "@/components/hero/hero";
 import { Services } from "@/components/services/services";
+import { Inventory } from "@/components/portfolio/inventory";
 import { LeverButton } from "@/components/ui/lever-button";
 
 /** Placeholder sections: anchors for the nav until the real sections land. */
@@ -24,7 +25,7 @@ export default function Home() {
       <main>
         <Hero />
         <Services />
-        <Stub id="inventory" kicker="ZONE 02" title="Inventory" />
+        <Inventory />
         <Stub id="quest" kicker="ZONE 03" title="Quest log">
           <LeverButton href="#quest" label="Accept quest" hint="Pull to begin" />
         </Stub>
