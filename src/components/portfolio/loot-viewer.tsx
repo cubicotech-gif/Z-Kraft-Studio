@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { ArcadeButton } from "@/components/ui/arcade-button";
 import { useSound } from "@/components/fx/sound-provider";
-import { TYPE_LABEL, type Item } from "@/lib/portfolio";
-import { RARITY_COLOR } from "./rarity";
-import { ItemArt } from "./placeholder-art";
+import type { Category, GalleryItem } from "@/lib/gallery";
+import { categoryColor } from "./rarity";
 
 const CRATE_MS = 1150; // the whole crate reveal; tap/any key skips it
 
@@ -35,16 +34,19 @@ export type Active = { id: string; crate: boolean };
  */
 export function LootViewer({
   items,
+  categories,
   active,
   onChange,
 }: {
-  items: Item[];
+  items: GalleryItem[];
+  categories: Category[];
   active: Active | null;
   onChange: (next: Active | null) => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const index = active ? items.findIndex((i) => i.id === active.id) : -1;
   const item = index >= 0 ? items[index] : null;
+  const category = item ? categories.find((c) => c.id === item.categoryId) : undefined;
 
   useEffect(() => {
     const d = dialog.current!;
@@ -63,15 +65,15 @@ export function LootViewer({
     <dialog
       ref={dialog}
       data-lenis-prevent
-      aria-label={item ? `${item.name}, ${item.rarity} ${TYPE_LABEL[item.type]}` : "Portfolio item"}
+      aria-label={item ? `${item.title}, ${category?.name ?? "portfolio"}` : "Portfolio item"}
       onClose={() => onChange(null)}
-      style={item ? ({ "--r": RARITY_COLOR[item.rarity] } as React.CSSProperties) : undefined}
+      style={item ? ({ "--r": categoryColor(categories, item.categoryId) } as React.CSSProperties) : undefined}
       className="fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none overflow-y-auto overscroll-contain bg-transparent p-0 text-ink backdrop:bg-void-950/90 backdrop:backdrop-blur-sm"
     >
       {item && active && (
         <div className="grid min-h-dvh w-full grid-cols-[minmax(0,1fr)] place-items-center p-4" onClick={(e) => e.target === e.currentTarget && close()}>
           {/* keyed: each item starts in its own phase */}
-          <ViewerBody key={item.id} item={item} startWithCrate={active.crate} onClose={close} onNav={go} />
+          <ViewerBody key={item.id} item={item} label={category?.name ?? "Portfolio"} startWithCrate={active.crate} onClose={close} onNav={go} />
         </div>
       )}
     </dialog>
@@ -80,11 +82,13 @@ export function LootViewer({
 
 function ViewerBody({
   item,
+  label,
   startWithCrate,
   onClose,
   onNav,
 }: {
-  item: Item;
+  item: GalleryItem;
+  label: string;
   startWithCrate: boolean;
   onClose: () => void;
   onNav: (delta: number) => void;
@@ -97,10 +101,10 @@ function ViewerBody({
     play("lever");
     const t = window.setTimeout(() => {
       setPhase("view");
-      play(item.rarity === "legendary" || item.rarity === "epic" ? "levelup" : "click");
+      play("levelup");
     }, CRATE_MS);
     return () => window.clearTimeout(t);
-  }, [phase, item.rarity, play]);
+  }, [phase, play]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -124,7 +128,7 @@ function ViewerBody({
       >
         <span aria-hidden className="crate-burst pointer-events-none absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,var(--r),transparent_65%)]" />
         <Crate />
-        <span className="crate-label font-hud text-sm font-bold uppercase tracking-[0.35em] text-[var(--r)]">{item.rarity} drop!</span>
+        <span className="crate-label font-hud text-sm font-bold uppercase tracking-[0.35em] text-[var(--r)]">new drop!</span>
         <span className="absolute bottom-2 font-hud text-[0.7rem] tracking-[0.2em] text-ink-dim">TAP TO SKIP</span>
       </button>
     );
@@ -136,7 +140,7 @@ function ViewerBody({
         <div className="chamfer relative bg-void-900 p-5 sm:p-7">
           <div className="flex items-start justify-between gap-4">
             <p className="font-hud text-xs font-bold uppercase tracking-[0.3em] text-[var(--r)]">
-              {item.rarity} · {TYPE_LABEL[item.type]}
+              {label}
             </p>
             <button type="button" data-no-arrow onClick={onClose} aria-label="Close" className="-mr-2 -mt-2 grid size-11 place-items-center text-ink-dim hover:text-neon-cyan">
               <X className="size-6" aria-hidden />
@@ -144,14 +148,18 @@ function ViewerBody({
           </div>
 
           <div className="mt-3 grid place-items-center bg-[radial-gradient(70%_80%_at_50%_40%,color-mix(in_oklab,var(--r)_18%,transparent),transparent)] py-4">
-            <ItemArt item={item} className="max-h-[48dvh] w-full" />
+            {item.type === "video" ? (
+              <video src={item.src} controls playsInline preload="metadata" className="max-h-[56dvh] w-full object-contain" />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={item.src} alt={item.title} className="max-h-[56dvh] w-full object-contain" />
+            )}
           </div>
 
-          <h3 className="mt-4 font-display text-3xl font-extrabold tracking-tight">{item.name}</h3>
-          <p className="mt-1 text-sm text-ink-dim">{item.blurb}</p>
+          <h3 className="mt-4 font-display text-3xl font-extrabold tracking-tight">{item.title}</h3>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <ArcadeButton href={`/order?tier=${item.rarity}`} variant="magenta" wrap onClick={onClose} className="min-w-0 flex-1 basis-48">
+            <ArcadeButton href="/order" variant="magenta" wrap onClick={onClose} className="min-w-0 flex-1 basis-48">
               Commission something like this
             </ArcadeButton>
             <div className="ml-auto flex gap-2">

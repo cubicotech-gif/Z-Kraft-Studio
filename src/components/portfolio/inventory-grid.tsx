@@ -1,26 +1,27 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Play } from "lucide-react";
 import { ScrollReveal } from "@/components/fx/scroll-reveal";
 import { useSound } from "@/components/fx/sound-provider";
-import { FILTERS, ITEMS, TYPE_LABEL, type ItemType } from "@/lib/portfolio";
-import { cn } from "@/lib/utils";
-import { ItemArt } from "./placeholder-art";
-import { LootViewer, type Active } from "./loot-viewer";
 import { prefersReducedMotion } from "@/components/fx/use-reduced-motion";
-import { RARITY_COLOR } from "./rarity";
+import type { Gallery } from "@/lib/gallery";
+import { LootViewer, type Active } from "./loot-viewer";
+import { categoryColor } from "./rarity";
 
-export function InventoryGrid() {
-  const [filter, setFilter] = useState<"all" | ItemType>("all");
+export function InventoryGrid({ gallery }: { gallery: Gallery }) {
+  const { categories, items } = gallery;
+  const [filter, setFilter] = useState("all");
   const [active, setActive] = useState<Active | null>(null);
   const seen = useRef(new Set<string>());
   const { play } = useSound();
-  const visible = filter === "all" ? ITEMS : ITEMS.filter((i) => i.type === filter);
+  const visible = filter === "all" ? items : items.filter((i) => i.categoryId === filter);
+  const count = (id: string) => items.filter((i) => i.categoryId === id).length;
 
   return (
     <>
       <div role="group" aria-label="Filter inventory" className="mt-8 flex flex-wrap gap-2">
-        {FILTERS.map((f) => (
+        {[{ id: "all", name: "All" }, ...categories].map((f) => (
           <button
             key={f.id}
             type="button"
@@ -32,41 +33,60 @@ export function InventoryGrid() {
             }}
             className="min-h-11 border border-void-600 px-4 font-hud text-xs font-semibold uppercase tracking-[0.2em] text-ink-dim transition-colors hover:border-neon-cyan hover:text-neon-cyan aria-pressed:border-neon-cyan aria-pressed:bg-neon-cyan aria-pressed:text-void-950"
           >
-            {f.label}
+            {f.name}
+            {f.id !== "all" && <span className="ml-1.5 opacity-60">{count(f.id)}</span>}
           </button>
         ))}
       </div>
 
-      <ScrollReveal>
-        <ul key={filter} className="mt-6 grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-3 lg:grid-cols-6">
-          {visible.map((item) => (
-            <li key={item.id} data-reveal style={{ "--r": RARITY_COLOR[item.rarity], "--g": "6px" } as React.CSSProperties} className="rarity-glow transition-[transform,filter] duration-150 focus-within:[--g:16px] pointer-fine:hover:-translate-y-1 pointer-fine:hover:[--g:16px]">
-              <button
-                type="button"
-                data-no-arrow
-                onClick={() => {
-                  play("click");
-                  // crate only on the first open of an item (and never with reduced motion)
-                  const crate = !seen.current.has(item.id) && !prefersReducedMotion();
-                  seen.current.add(item.id);
-                  setActive({ id: item.id, crate });
-                }}
-                aria-label={`Open ${item.rarity} ${TYPE_LABEL[item.type]}: ${item.name}`}
-                className="chamfer chamfer-sm block aspect-square w-full touch-manipulation bg-[var(--r)] p-px outline-offset-2"
-              >
-                <span className="chamfer chamfer-sm relative grid size-full place-items-center bg-void-900 p-2.5 pb-6">
-                  <ItemArt item={item} className={cn("max-h-full max-w-full", item.type === "panel" ? "w-full" : "h-full")} />
-                  <span className="absolute inset-x-0 bottom-1 truncate px-1.5 text-center font-hud text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[var(--r)]">
-                    {item.name}
-                  </span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </ScrollReveal>
+      {visible.length === 0 ? (
+        <p className="mt-10 border border-dashed border-void-600 p-8 text-center font-hud text-sm uppercase tracking-[0.2em] text-ink-dim">
+          New drops landing here soon.
+        </p>
+      ) : (
+        <ScrollReveal>
+          <ul key={filter} className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {visible.map((item) => {
+              const cat = categories.find((c) => c.id === item.categoryId);
+              return (
+                <li key={item.id} data-reveal style={{ "--r": categoryColor(categories, item.categoryId), "--g": "6px" } as React.CSSProperties} className="rarity-glow transition-[transform,filter] duration-150 focus-within:[--g:16px] pointer-fine:hover:-translate-y-1 pointer-fine:hover:[--g:16px]">
+                  <button
+                    type="button"
+                    data-no-arrow
+                    onClick={() => {
+                      play("click");
+                      const crate = !seen.current.has(item.id) && !prefersReducedMotion();
+                      seen.current.add(item.id);
+                      setActive({ id: item.id, crate });
+                    }}
+                    aria-label={`Open ${cat?.name ?? "portfolio"} ${item.type}: ${item.title}`}
+                    className="chamfer chamfer-sm block aspect-square w-full touch-manipulation bg-[var(--r)] p-px outline-offset-2"
+                  >
+                    <span className="chamfer chamfer-sm relative block size-full bg-void-900">
+                      {item.type === "video" ? (
+                        <>
+                          <video src={item.src} muted playsInline preload="metadata" aria-hidden className="size-full object-cover" />
+                          <span aria-hidden className="absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-void-950/80 text-[var(--r)]">
+                            <Play className="size-3.5 fill-current" />
+                          </span>
+                        </>
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.src} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
+                      )}
+                      <span className="absolute inset-x-0 bottom-0 truncate bg-void-950/80 px-2 py-1.5 text-center font-hud text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[var(--r)]">
+                        {item.title}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </ScrollReveal>
+      )}
 
-      <LootViewer items={visible} active={active} onChange={setActive} />
+      <LootViewer items={visible} categories={categories} active={active} onChange={setActive} />
     </>
   );
 }
