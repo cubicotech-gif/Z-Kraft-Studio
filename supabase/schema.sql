@@ -24,3 +24,34 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('inspiration', 'inspiration', false, 5242880, array['image/png', 'image/jpeg', 'image/webp', 'image/gif'])
 on conflict (id) do update
   set file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+
+-- ---------------------------------------------------------------------------
+-- Portfolio (admin-managed). Categories + items. Only the server (service-role key) writes.
+-- The `portfolio` bucket is PUBLIC READ so images/videos can be shown on the site; uploads still
+-- need a one-time signed URL that only the password-protected admin can request.
+-- ---------------------------------------------------------------------------
+create table if not exists public.portfolio_categories (
+  id         uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  slug       text not null unique check (char_length(slug) between 1 and 80),
+  name       text not null check (char_length(name) between 1 and 80),
+  sort_order int  not null default 0
+);
+
+create table if not exists public.portfolio_items (
+  id          uuid primary key default gen_random_uuid(),
+  created_at  timestamptz not null default now(),
+  category_id uuid not null references public.portfolio_categories(id) on delete cascade,
+  title       text not null check (char_length(title) <= 120),
+  path        text not null,
+  media_type  text not null check (media_type in ('image', 'video'))
+);
+
+alter table public.portfolio_categories enable row level security;
+alter table public.portfolio_items enable row level security;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('portfolio', 'portfolio', true, 52428800,
+        array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime'])
+on conflict (id) do update
+  set public = true, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;

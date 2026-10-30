@@ -18,3 +18,16 @@ export async function uploadInspiration(path: string, token: string, file: File)
   const { error } = await client.storage.from(BUCKET).uploadToSignedUrl(path, token, file, { contentType: file.type });
   if (error) throw new Error("Upload failed. Try again.");
 }
+
+/** Same as above for any bucket (used by the admin portfolio uploader). */
+export async function uploadToBucket(bucket: string, path: string, token: string, file: File) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anon) throw new Error("Uploads are not available right now.");
+  if (!client) {
+    const { createClient } = await import("@supabase/supabase-js");
+    client = createClient(url, anon, { auth: { persistSession: false, autoRefreshToken: false } });
+  }
+  const { error } = await client.storage.from(bucket).uploadToSignedUrl(path, token, file, { contentType: file.type });
+  if (error) throw new Error(`${file.name}: upload failed.`);
+}
