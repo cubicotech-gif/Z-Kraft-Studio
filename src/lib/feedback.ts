@@ -1,9 +1,13 @@
 /** Feedback + Discord contact. Shared by the public form, the admin and the server actions. */
-export type Review = { id: string; name: string; discord: string; rating: number; message: string; createdAt: string };
+export type MediaRef = { src: string; type: "image" | "video" };
+export type Review = { id: string; name: string; discord: string; rating: number; message: string; createdAt: string; media?: MediaRef };
 export type AdminReview = Review & { status: "pending" | "approved"; source: "public" | "admin" };
 export type DiscordInfo = { handle: string; invite: string };
 
-export const FEEDBACK_LIMITS = { msgMin: 5, msgMax: 1000, nameMax: 80 } as const;
+export const FEEDBACK_LIMITS = { msgMin: 5, msgMax: 1000, nameMax: 80, imageBytes: 5 * 1024 * 1024, videoBytes: 25 * 1024 * 1024 } as const;
+/** Visitor uploads go to feedback/<uuid>/<name>.<ext>; admin uploads use the shared items/ prefix. */
+export const FEEDBACK_PATH = /^feedback\/[0-9a-f-]{36}\/[A-Za-z0-9_-]{1,60}\.(png|jpg|webp|gif|mp4|webm|mov)$/;
+export const VIDEO_EXT = /\.(mp4|webm|mov)$/;
 
 const HANDLE = /^[A-Za-z0-9_.#-]{2,40}$/;
 const INVITE = /^https:\/\/(discord\.gg|discord\.com\/invite)\/[A-Za-z0-9-]{2,40}$/;

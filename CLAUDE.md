@@ -51,7 +51,7 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 ## Site map (traditional multi-page; every route is static)
 `/` home (hero, how it works, services, featured loot, why us, FAQ, CTA) · `/services` index ·
 `/services/[slug]` x4 (single-emote, emote-pack, badges-and-panels, full-illustration; one template, content from `src/lib/services.ts`) ·
-`/portfolio` (inventory + loot-crate lightbox) · `/how-it-works` (+ FAQ) · `/about` · `/order` (Quest Log; `?tier=<common|rare|epic|legendary>` preselects and jumps to step 2) · 404, sitemap, robots.
+`/portfolio` (inventory + loot-crate lightbox) · `/artists` (affiliated artists, admin-managed) · `/feedback` (reviews wall; public submit with approval, optional image/video) · `/how-it-works` (+ FAQ) · `/about` · `/order` (Quest Log; `?tier=<common|rare|epic|legendary>` preselects and jumps to step 2) · 404, sitemap, robots.
 Every page ends in a `CtaBand` (lever) and the header always shows "Start quest" -> `/order`.
 Note: Cache Components keeps visited routes mounted-but-hidden, so tests must select visible elements (`:visible`). Unknown `/services/<x>` renders the 404 UI with `noindex` but HTTP 200 (`dynamicParams` is not allowed with cacheComponents).
 
@@ -60,7 +60,7 @@ Note: Cache Components keeps visited routes mounted-but-hidden, so tests must se
 - `src/lib/` content + logic: `services.ts` (tiers; PLACEHOLDER prices/copy), `portfolio.ts` (SAMPLE items), `site.ts` (nav, FAQ, steps), `order-schema.ts` (validation shared by client and server), `supabase/{server,browser}.ts`
 - `src/components/hero/` home hero (server; shows the owner-uploaded `hero` slot image/video, else a CSS-only logo panel). The old crosshair/arrow arena was removed.
 - `src/components/play/` `MemoryGame` ("Match the loot"), built from real portfolio images; `sections/portfolio-showcase.tsx` = home "wall" collage + the game (falls back to sample teaser until 3+ images exist)
-- Admin (`/admin`, tabs): Upload, Library, Categories, Site (logo / hero / about / CTA background images or videos + top ticker text; `lib/site-content.ts`, `lib/site-data.ts`, `actions/site.ts`), Feedback, Discord. Public data is cached with tags (`gallery`, `feedback`, `site`) and refreshed by `updateTag` in the actions
+- Admin (`/admin`, tabs): Upload, Library, Categories, Artists (`lib/artists*.ts`, `actions/artists.ts`: name, Discord handle, specialities, bio, availability, avatar, up to 3 samples, reorder), Site (logo / hero / about / CTA background images or videos + top ticker text; `lib/site-content.ts`, `lib/site-data.ts`, `actions/site.ts`), Feedback, Discord. Public data is cached with tags (`gallery`, `feedback`, `site`) and refreshed by `updateTag` in the actions
 - `src/components/layout/` header (`DesktopNav` dropdown, `MobileMenu`, always-visible quest CTA), footer, `PageHeader`, sound toggle, `ScrollHealthBar` (boss-style HP: starts full, drains with scroll, "CLEARED" at bottom; ref+rAF)
 - `src/components/sections/` reusable page sections: `Section`, `Faq` (native details), `CtaBand`, `HowItWorksSteps`, `Values`, `FeaturedLoot`
 - `src/components/services/` `TierCard`/`TierGrid` + `TIER_STYLE` (`--r`/`--g` vars + `.rarity-glow`; glow is a filter on a wrapper because chamfer clips shadows)
@@ -70,7 +70,9 @@ Note: Cache Components keeps visited routes mounted-but-hidden, so tests must se
 - `src/components/fx/` sound provider, Lenis, reduced-motion helpers, `ScrollReveal` (GSAP ScrollTrigger imported only near the viewport; skipped for reduced motion)
 - `src/components/intro/` Press Start loader (head script sets `html[data-intro]`; CSS-only failsafe ends it by ~2s)
 
-Anchors rely on `scroll-mt-16` for the fixed header (don't also add a Lenis offset: it stacks).
+The desktop nav shows from `xl` (7 links); below that the mobile menu is used.
+Feedback attachments: visitors upload via a size-limited signed URL to `feedback/<uuid>/` (images 5 MB, videos 25 MB); nothing shows until approved in admin.
+Anchors rely on `scroll-mt-24` for the fixed header + ticker (don't also add a Lenis offset: it stacks).
 
 ## Commands
 `npm run dev` · `npm run build` · `npm run lint` · `npx tsc --noEmit`

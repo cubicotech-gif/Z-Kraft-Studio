@@ -11,9 +11,9 @@ const isActive = (path: string, href: string) => (href === "/" ? path === "/" : 
 /** Desktop nav (lg+). Services opens a dropdown on hover or keyboard focus (no JS state needed). */
 export function DesktopNav() {
   const path = usePathname();
-  const link = "block px-4 py-3 font-hud text-xs font-semibold uppercase tracking-[0.22em] transition-colors hover:text-neon-cyan";
+  const link = "block whitespace-nowrap px-3 py-3 2xl:px-4 font-hud text-xs font-semibold uppercase tracking-[0.22em] transition-colors hover:text-neon-cyan";
   return (
-    <nav aria-label="Primary" className="ml-6 hidden items-center lg:flex">
+    <nav aria-label="Primary" className="ml-6 hidden items-center xl:flex">
       {NAV.map((item) => {
         const active = isActive(path, item.href);
         const cls = cn(link, active ? "text-neon-cyan" : "text-ink-dim");

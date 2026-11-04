@@ -5,7 +5,9 @@ import { useState, useTransition } from "react";
 import { logout, seedDefaultCategories } from "@/app/actions/admin";
 import type { AdminReview, DiscordInfo } from "@/lib/feedback";
 import type { Gallery } from "@/lib/gallery";
+import type { Artist } from "@/lib/artists";
 import type { SiteContent } from "@/lib/site-content";
+import { ArtistsPanel } from "./artists-panel";
 import { CategoriesPanel } from "./categories-panel";
 import { DiscordPanel } from "./discord-panel";
 import { FeedbackPanel } from "./feedback-panel";
@@ -20,13 +22,14 @@ const TABS = [
   { id: "upload", label: "Upload" },
   { id: "library", label: "Library" },
   { id: "categories", label: "Categories" },
+  { id: "artists", label: "Artists" },
   { id: "site", label: "Site" },
   { id: "feedback", label: "Feedback" },
   { id: "discord", label: "Discord" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 
-export function AdminShell({ gallery, reviews, discord, site, tickerText }: { gallery: Gallery; reviews: AdminReview[]; discord: DiscordInfo; site: SiteContent; tickerText: string }) {
+export function AdminShell({ gallery, reviews, discord, site, tickerText, artists }: { gallery: Gallery; reviews: AdminReview[]; discord: DiscordInfo; site: SiteContent; tickerText: string; artists: Artist[] }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("upload");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -83,8 +86,9 @@ export function AdminShell({ gallery, reviews, discord, site, tickerText }: { ga
         {tab === "upload" && <UploadPanel gallery={gallery} saved={saved} notify={notify} onDone={() => { router.refresh(); setTab("library"); }} />}
         {tab === "library" && <LibraryPanel gallery={gallery} saved={saved} run={run} busy={busy} notify={notify} refresh={() => router.refresh()} />}
         {tab === "categories" && <CategoriesPanel gallery={gallery} saved={saved} run={run} busy={busy} />}
+        {tab === "artists" && <ArtistsPanel artists={artists} run={run} busy={busy} notify={notify} />}
         {tab === "site" && <SitePanel site={site} tickerText={tickerText} run={run} busy={busy} notify={notify} refresh={() => router.refresh()} />}
-        {tab === "feedback" && <FeedbackPanel reviews={reviews} run={run} busy={busy} />}
+        {tab === "feedback" && <FeedbackPanel reviews={reviews} run={run} busy={busy} notify={notify} />}
         {tab === "discord" && <DiscordPanel discord={discord} run={run} busy={busy} />}
       </div>
     </div>
