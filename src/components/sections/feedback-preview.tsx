@@ -9,7 +9,7 @@ export async function FeedbackPreview() {
   const { reviews, discord } = await getFeedback();
   if (!reviews.length && !discord.handle && !discord.invite) return null;
   return (
-    <section id="feedback" aria-labelledby="feedback-title" className="scroll-mt-16 border-t border-void-700 px-4 py-16 sm:px-6 sm:py-24">
+    <section id="feedback" aria-labelledby="feedback-title" className="scroll-mt-24 border-t border-void-700 px-4 py-16 sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <p className="font-hud text-xs font-semibold tracking-[0.3em] text-neon-lime">PLAYER REVIEWS</p>
         <h2 id="feedback-title" className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-5xl">What players say</h2>

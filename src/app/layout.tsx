@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Oxanium, Chakra_Petch, Geist } from "next/font/google";
+import { Lexend, Kumbh_Sans, Source_Serif_4 } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SoundProvider } from "@/components/fx/sound-provider";
-import { PressStart } from "@/components/intro/press-start";
+import { Suspense } from "react";
+import { IntroLoader } from "@/components/intro/intro-loader";
 import { SmoothScroll } from "@/components/fx/smooth-scroll";
 import "./globals.css";
 
-const body = Geist({ variable: "--f-body", subsets: ["latin"], display: "swap" });
-const display = Oxanium({ variable: "--f-display", subsets: ["latin"], weight: ["600", "700", "800"], display: "swap" });
-const hud = Chakra_Petch({ variable: "--f-hud", subsets: ["latin"], weight: ["500", "600", "700"], display: "swap" });
+const body = Source_Serif_4({ variable: "--f-body", subsets: ["latin"], display: "swap" });
+const display = Lexend({ variable: "--f-display", subsets: ["latin"], weight: ["600", "700", "800"], display: "swap" });
+const hud = Kumbh_Sans({ variable: "--f-hud", subsets: ["latin"], weight: ["500", "600", "700", "800"], display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "Z Kraft Studio — Custom art for gamers & streamers", template: "%s | Z Kraft Studio" },
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 const INTRO_BOOT = `try{if(!sessionStorage.getItem("zk-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.dataset.intro="1"}catch(e){}`;
 
 export const viewport: Viewport = {
-  themeColor: "#07050f",
+  themeColor: "#0b0810",
   width: "device-width",
   initialScale: 1,
 };
@@ -37,7 +38,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-dvh">
         <SoundProvider>
-          <PressStart />
+          <Suspense fallback={null}>
+            <IntroLoader />
+          </Suspense>
           <SmoothScroll />
           <SiteHeader />
           {children}

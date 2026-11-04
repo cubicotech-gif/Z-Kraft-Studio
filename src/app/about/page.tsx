@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { SiteMedia } from "@/components/sections/site-media";
 import { PageHeader } from "@/components/layout/page-header";
 import { Section } from "@/components/sections/section";
 import { Values } from "@/components/sections/values";
@@ -33,6 +35,12 @@ export default function AboutPage() {
               other end of the email.
             </p>
           </div>
+          <div className="grid h-fit gap-6">
+          <Suspense fallback={null}>
+            <div className="chamfer overflow-hidden bg-void-800 empty:hidden">
+              <SiteMedia slot="about" className="aspect-[4/3] w-full object-cover" />
+            </div>
+          </Suspense>
           <div className="chamfer h-fit bg-void-800 p-8">
             <p className="font-hud text-xs font-bold uppercase tracking-[0.3em] text-neon-lime">STUDIO STATS</p>
             <dl className="mt-5 space-y-5">
@@ -47,6 +55,7 @@ export default function AboutPage() {
                 </div>
               ))}
             </dl>
+          </div>
           </div>
         </div>
       </Section>

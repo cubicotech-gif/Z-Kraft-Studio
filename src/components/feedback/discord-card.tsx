@@ -14,7 +14,7 @@ export function DiscordCard({ discord }: { discord: DiscordInfo }) {
         </div>
         <div className="flex flex-wrap gap-2">
           {discord.invite && (
-            <a href={discord.invite} target="_blank" rel="noopener noreferrer" className="chamfer chamfer-sm inline-flex min-h-11 items-center bg-neon-violet px-5 font-hud text-xs font-bold uppercase tracking-[0.18em] text-void-950 hover:brightness-110">
+            <a href={discord.invite} target="_blank" rel="noopener noreferrer" className="chamfer chamfer-sm inline-flex min-h-11 items-center bg-neon-violet px-5 font-hud text-xs font-bold uppercase tracking-[0.18em] text-white hover:brightness-110">
               Join server
             </a>
           )}

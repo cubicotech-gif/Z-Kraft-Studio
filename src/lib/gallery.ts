@@ -5,7 +5,10 @@
  */
 export type Category = { id: string; slug: string; name: string };
 export type MediaType = "image" | "video";
-export type GalleryItem = { id: string; categoryId: string; title: string; src: string; type: MediaType };
+export type Fit = "cover" | "contain";
+/** `fit` + focus point (0-100 %) decide which part of the media stays visible in the grid tile. */
+export type Display = { fit: Fit; focusX: number; focusY: number };
+export type GalleryItem = { id: string; categoryId: string; title: string; description: string; src: string; type: MediaType } & Display;
 export type Gallery = { categories: Category[]; items: GalleryItem[] };
 
 export const DEFAULT_CATEGORY_NAMES = [
@@ -40,4 +43,17 @@ export function titleFromFile(name: string) {
 
 export function defaultCategories(): Category[] {
   return DEFAULT_CATEGORY_NAMES.map((name) => ({ id: slugify(name), slug: slugify(name), name }));
+}
+
+export const DEFAULT_DISPLAY: Display = { fit: "cover", focusX: 50, focusY: 50 };
+export const TEXT_LIMITS = { title: 120, description: 500 } as const;
+
+const clamp = (n: unknown) => Math.min(100, Math.max(0, Math.round(Number(n))) || 0);
+export function cleanDisplay(d: Partial<Display> | undefined): Display {
+  return { fit: d?.fit === "contain" ? "contain" : "cover", focusX: d?.focusX == null ? 50 : clamp(d.focusX), focusY: d?.focusY == null ? 50 : clamp(d.focusY) };
+}
+
+/** Inline style for the grid tile media element. */
+export function tileMediaStyle(d: Display): React.CSSProperties {
+  return { objectFit: d.fit, objectPosition: `${d.focusX}% ${d.focusY}%` };
 }

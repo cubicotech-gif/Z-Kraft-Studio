@@ -1,66 +1,81 @@
+import { Suspense } from "react";
 import { ArrowRight } from "lucide-react";
 import { ArcadeButton } from "@/components/ui/arcade-button";
-import { HeroArena } from "./hero-arena";
+import { LogoMark } from "@/components/layout/logo-mark";
+import { getSite } from "@/lib/site-data";
+import type { SiteMedia } from "@/lib/site-content";
 
-const QUESTS = [
-  { label: "Emotes", color: "text-common border-common" },
-  { label: "Sub badges", color: "text-rare border-rare" },
-  { label: "Stream panels", color: "text-epic border-epic" },
-  { label: "Illustrations", color: "text-legendary border-legendary" },
-];
+const MAKES = ["Emotes", "Sub badges", "Stream panels", "Illustrations"];
 
-export function Hero() {
+function HeroArt({ media }: { media?: SiteMedia }) {
   return (
-    <section aria-labelledby="hero-title" className="relative bg-void-950">
-      {/* background layers: CSS only, no image requests */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-neon-grid" />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_20%_15%,color-mix(in_oklab,var(--neon-magenta)_22%,transparent),transparent),radial-gradient(50%_45%_at_85%_70%,color-mix(in_oklab,var(--neon-cyan)_18%,transparent),transparent)]"
-      />
+    <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+      <div aria-hidden className="pointer-events-none absolute -inset-6 -z-10 rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--neon-magenta)_35%,transparent),transparent)] blur-2xl" />
+      <div className="[filter:drop-shadow(0_0_26px_color-mix(in_oklab,var(--neon-magenta)_35%,transparent))]">
+        <div className="chamfer relative aspect-[4/5] w-full overflow-hidden bg-void-800">
+          {media ? (
+            media.type === "video" ? (
+              <video src={media.src} autoPlay muted loop playsInline preload="metadata" className="size-full object-cover" />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={media.src} alt="" fetchPriority="high" decoding="async" className="size-full object-cover" />
+            )
+          ) : (
+            <div aria-hidden className="grid size-full place-items-center bg-[radial-gradient(70%_60%_at_50%_40%,color-mix(in_oklab,var(--neon-magenta)_30%,transparent),transparent)]">
+              <LogoMark className="size-40 text-neon-magenta opacity-90 sm:size-56" />
+            </div>
+          )}
+          <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void-950/60 via-transparent to-transparent" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
-      <HeroArena>
-        <div className="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 pb-20 pt-28 sm:px-6">
-          <p className="font-hud text-xs font-semibold tracking-[0.3em] text-neon-lime sm:text-sm">
-            PLAYER 1 <span className="mx-1 inline-block size-2 animate-blink bg-neon-lime align-middle" /> NEW QUEST AVAILABLE
-          </p>
-
-          <h1
-            id="hero-title"
-            data-arrow-target
-            className="mt-5 max-w-4xl font-display text-[clamp(2.6rem,10.5vw,6.5rem)] font-extrabold leading-[0.98] tracking-tight text-ink"
-          >
-            Custom art that <span className="text-neon-magenta text-glow-magenta">levels up</span> your stream.
+function HeroBody({ media }: { media?: SiteMedia }) {
+  return (
+    <section aria-labelledby="hero-title" className="scanlines relative isolate overflow-hidden bg-void-950">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-neon-grid" />
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-36 sm:px-6 lg:min-h-dvh lg:grid-cols-[1.15fr_0.85fr] lg:gap-8">
+        <div>
+          <span className="pill-brush font-hud text-xs font-bold uppercase tracking-[0.18em]">Custom art studio</span>
+          <h1 id="hero-title" className="mt-6 max-w-3xl text-[clamp(2.1rem,8.2vw,4.75rem)] font-extrabold leading-[1.02] text-ink">
+            Custom art that <span className="text-neon-cyan">levels up</span> your stream
           </h1>
-
           <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-dim sm:text-lg">
-            Emotes, sub badges, stream panels and character illustrations — hand-made from your own
-            inspirations, not a template.
+            Emotes, sub badges, stream panels and character illustrations, hand-made from your own inspirations, not a template.
           </p>
-
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
             <ArcadeButton href="/order" variant="magenta" className="sm:min-w-56">
               Start quest <ArrowRight className="size-5" aria-hidden />
             </ArcadeButton>
-            <ArcadeButton href="/services" variant="ghost">
-              Browse loot
+            <ArcadeButton href="/portfolio" variant="ghost">
+              See our work
             </ArcadeButton>
           </div>
-
           <ul className="mt-10 flex flex-wrap gap-2" aria-label="What we make">
-            {QUESTS.map((q) => (
-              <li key={q.label} className={`border bg-void-900/70 px-3 py-1.5 font-hud text-xs font-semibold uppercase tracking-[0.18em] ${q.color}`}>
-                {q.label}
+            {MAKES.map((m) => (
+              <li key={m} className="border border-void-600 bg-void-900/70 px-3 py-1.5 font-hud text-xs font-semibold uppercase tracking-[0.16em] text-ink-dim">
+                {m}
               </li>
             ))}
           </ul>
-
-          <p aria-hidden className="mt-8 font-hud text-xs tracking-widest text-ink-dim/70">
-            <span className="hidden pointer-fine:inline">{"// CLICK ANYWHERE TO FIRE"}</span>
-            <span className="pointer-fine:hidden">{"// TAP TO FIRE"}</span>
-          </p>
         </div>
-      </HeroArena>
+        <HeroArt media={media} />
+      </div>
     </section>
+  );
+}
+
+async function HeroLoaded() {
+  const { slots } = await getSite();
+  return <HeroBody media={slots.hero} />;
+}
+
+export function Hero() {
+  return (
+    <Suspense fallback={<HeroBody />}>
+      <HeroLoaded />
+    </Suspense>
   );
 }

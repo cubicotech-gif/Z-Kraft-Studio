@@ -22,8 +22,8 @@ export function FeedbackForm() {
 
   if (sent) {
     return (
-      <div role="status" className="border border-neon-lime/60 bg-void-900 p-6">
-        <p className="font-display text-xl font-bold text-neon-lime">Thanks, player!</p>
+      <div role="status" className="border border-emerald-400/60 bg-void-900 p-6">
+        <p className="font-display text-xl font-bold text-emerald-400">Thanks, player!</p>
         <p className="mt-1 text-sm text-ink-dim">Your feedback is in. It will show up on the wall once we&apos;ve checked it.</p>
       </div>
     );
@@ -77,7 +77,7 @@ export function FeedbackForm() {
         <label>Website<input type="text" name="website" tabIndex={-1} autoComplete="off" /></label>
       </div>
       {error && <p role="alert" className="text-sm text-neon-magenta">{error}</p>}
-      <button disabled={pending} className="chamfer chamfer-sm min-h-11 bg-neon-magenta px-6 font-hud text-sm font-bold uppercase tracking-[0.2em] text-void-950 hover:brightness-110 disabled:opacity-60 sm:w-fit">
+      <button disabled={pending} className="chamfer chamfer-sm min-h-11 bg-neon-magenta px-6 font-hud text-sm font-bold uppercase tracking-[0.2em] text-white hover:brightness-110 disabled:opacity-60 sm:w-fit">
         {pending ? "Sending…" : "Send feedback"}
       </button>
     </form>

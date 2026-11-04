@@ -6,8 +6,9 @@ Studio site for custom art for gamers and streamers: emotes, sub badges, stream 
 illustrations built from the client's own inspirations.
 
 ## Concept: the site is a game
-The visitor is a **player**; commissioning art is a **quest**. Visual style is original dark neon +
-an angular cyber-HUD look (chamfered corners, thin neon lines, vector reticle/arrows; NOT pixel art).
+The visitor is a **player**; commissioning art is a **quest**. Visual style is original: near-black
+ink-purple, ONE violet accent + soft lilac, bold wide uppercase headlines, serif body, rough hand-inked edges and
+brush-stroke pill labels. Calm and grown-up, not neon/childish; NOT pixel art.
 Never copy a real game's UI, fonts, characters or iconography.
 
 Vocabulary to keep consistent in copy and UI: Press Start, Quest / Quest Log, XP bar, Health bar
@@ -28,10 +29,10 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 
 ## Design tokens (`src/app/globals.css`)
 - Surfaces `void-950…600`; text `ink`, `ink-dim`
-- Neon: `neon-magenta` (primary), `neon-cyan` (accent/focus), `neon-lime`, `neon-violet`, `neon-amber`
+- Colour tokens keep their old names but are re-valued: `neon-magenta` = primary violet (use white text on it), `neon-cyan` = soft lilac accent/focus, `neon-lime` = lilac kicker text, `neon-violet`, `neon-amber` (gold). Success states use `emerald-400`
 - Rarity: `common`, `rare`, `epic`, `legendary`, each with a `shadow-glow-*` utility
-- Fonts: `font-display` (Oxanium, headlines), `font-hud` (Chakra Petch, labels/buttons), `font-sans` (Geist, body)
-- Helpers: `chamfer` / `chamfer-sm` (angled corners; clip-path clips shadows, so use a drop-shadow filter on a wrapper), `bg-neon-grid`, `scanlines`, `text-glow-*`
+- Fonts: `font-display` (Lexend, h1/h2 are uppercased in globals), `font-hud` (Kumbh Sans, labels/buttons), `font-sans` (Source Serif 4, body). Syne fails to load under Turbopack here; keep Lexend
+- Helpers: `chamfer` / `chamfer-sm` (rough inked edge via clip-path; clip-path clips shadows, so use a drop-shadow filter on a wrapper), `pill-brush`, `bg-neon-grid` (violet fog), `scanlines` (film grain), ticker classes
 - shadcn semantic vars (`--primary`, `--border`, …) are mapped onto this palette. Dark theme only.
 
 ## Hard rules
@@ -57,7 +58,9 @@ Note: Cache Components keeps visited routes mounted-but-hidden, so tests must se
 ## Layout of the code
 - `src/app/` routes, layout (fonts, header/footer, providers), globals.css (tokens), `actions/order.ts` (server actions: `createUploadUrls`, `submitOrder`)
 - `src/lib/` content + logic: `services.ts` (tiers; PLACEHOLDER prices/copy), `portfolio.ts` (SAMPLE items), `site.ts` (nav, FAQ, steps), `order-schema.ts` (validation shared by client and server), `supabase/{server,browser}.ts`
-- `src/components/hero/` home hero (server) + `HeroArena` (client: crosshair, arrows, shake; home only)
+- `src/components/hero/` home hero (server; shows the owner-uploaded `hero` slot image/video, else a CSS-only logo panel). The old crosshair/arrow arena was removed.
+- `src/components/play/` `MemoryGame` ("Match the loot"), built from real portfolio images; `sections/portfolio-showcase.tsx` = home "wall" collage + the game (falls back to sample teaser until 3+ images exist)
+- Admin (`/admin`, tabs): Upload, Library, Categories, Site (logo / hero / about / CTA background images or videos + top ticker text; `lib/site-content.ts`, `lib/site-data.ts`, `actions/site.ts`), Feedback, Discord. Public data is cached with tags (`gallery`, `feedback`, `site`) and refreshed by `updateTag` in the actions
 - `src/components/layout/` header (`DesktopNav` dropdown, `MobileMenu`, always-visible quest CTA), footer, `PageHeader`, sound toggle, `ScrollHealthBar` (boss-style HP: starts full, drains with scroll, "CLEARED" at bottom; ref+rAF)
 - `src/components/sections/` reusable page sections: `Section`, `Faq` (native details), `CtaBand`, `HowItWorksSteps`, `Values`, `FeaturedLoot`
 - `src/components/services/` `TierCard`/`TierGrid` + `TIER_STYLE` (`--r`/`--g` vars + `.rarity-glow`; glow is a filter on a wrapper because chamfer clips shadows)

@@ -78,3 +78,12 @@ create table if not exists public.site_settings (
 
 alter table public.feedback enable row level security;
 alter table public.site_settings enable row level security;
+
+-- ---------------------------------------------------------------------------
+-- Portfolio display settings (description + how the image is cropped in the grid). Safe to re-run.
+-- ---------------------------------------------------------------------------
+alter table public.portfolio_items
+  add column if not exists description text not null default '' check (char_length(description) <= 500),
+  add column if not exists fit        text not null default 'cover' check (fit in ('cover', 'contain')),
+  add column if not exists focus_x    int  not null default 50 check (focus_x between 0 and 100),
+  add column if not exists focus_y    int  not null default 50 check (focus_y between 0 and 100);

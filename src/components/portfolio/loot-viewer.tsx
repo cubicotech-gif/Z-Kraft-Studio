@@ -157,6 +157,7 @@ function ViewerBody({
           </div>
 
           <h3 className="mt-4 font-display text-3xl font-extrabold tracking-tight">{item.title}</h3>
+          {item.description && <p className="mt-1 whitespace-pre-line text-sm text-ink-dim">{item.description}</p>}
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <ArcadeButton href="/order" variant="magenta" wrap onClick={onClose} className="min-w-0 flex-1 basis-48">

@@ -12,14 +12,14 @@ import { useSound } from "@/components/fx/sound-provider";
  */
 const VARIANTS = {
   magenta: {
-    cap: "bg-neon-magenta text-void-950",
-    base: "bg-[#8a0f74]",
-    glow: "[filter:drop-shadow(0_0_14px_color-mix(in_oklab,var(--neon-magenta)_55%,transparent))]",
+    cap: "bg-neon-magenta text-white",
+    base: "bg-[#3f1d80]",
+    glow: "[filter:drop-shadow(0_0_16px_color-mix(in_oklab,var(--neon-magenta)_45%,transparent))]",
   },
   cyan: {
     cap: "bg-neon-cyan text-void-950",
-    base: "bg-[#0a7f8f]",
-    glow: "[filter:drop-shadow(0_0_14px_color-mix(in_oklab,var(--neon-cyan)_55%,transparent))]",
+    base: "bg-[#6e5aa8]",
+    glow: "[filter:drop-shadow(0_0_14px_color-mix(in_oklab,var(--neon-cyan)_40%,transparent))]",
   },
   ghost: {
     cap: "bg-void-700 text-ink",

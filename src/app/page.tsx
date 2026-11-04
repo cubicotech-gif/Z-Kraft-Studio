@@ -5,7 +5,7 @@ import { Hero } from "@/components/hero/hero";
 import { TierGrid } from "@/components/services/services";
 import { Section } from "@/components/sections/section";
 import { HowItWorksSteps } from "@/components/sections/how-it-works";
-import { FeaturedLoot } from "@/components/sections/featured-loot";
+import { PortfolioShowcase } from "@/components/sections/portfolio-showcase";
 import { Values } from "@/components/sections/values";
 import { FeedbackPreview } from "@/components/sections/feedback-preview";
 import { Faq } from "@/components/sections/faq";
@@ -30,12 +30,9 @@ export default function Home() {
           Compare all services <ArrowRight className="size-4" aria-hidden />
         </Link>
       </Section>
-      <Section id="featured" kicker="ZONE 02 · INVENTORY" title="Featured loot" lede="A taste of what we craft. Open the portfolio to inspect every piece.">
-        <FeaturedLoot />
-        <Link href="/portfolio" className={`${more} mt-8`}>
-          Open the inventory <ArrowRight className="size-4" aria-hidden />
-        </Link>
-      </Section>
+      <Suspense fallback={<div className="min-h-96" aria-hidden />}>
+        <PortfolioShowcase />
+      </Suspense>
       <Section id="why" kicker="WHY PLAYERS PICK US" title="Made for chat, built for you">
         <Values />
       </Section>
