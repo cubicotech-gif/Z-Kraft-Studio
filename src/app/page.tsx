@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Hero } from "@/components/hero/hero";
@@ -6,6 +7,7 @@ import { Section } from "@/components/sections/section";
 import { HowItWorksSteps } from "@/components/sections/how-it-works";
 import { FeaturedLoot } from "@/components/sections/featured-loot";
 import { Values } from "@/components/sections/values";
+import { FeedbackPreview } from "@/components/sections/feedback-preview";
 import { Faq } from "@/components/sections/faq";
 import { CtaBand } from "@/components/sections/cta-band";
 import { SITE_FAQS } from "@/lib/site";
@@ -37,6 +39,9 @@ export default function Home() {
       <Section id="why" kicker="WHY PLAYERS PICK US" title="Made for chat, built for you">
         <Values />
       </Section>
+      <Suspense fallback={null}>
+        <FeedbackPreview />
+      </Suspense>
       <Section id="faq" kicker="QUICK ANSWERS" title="Questions, answered">
         <Faq items={SITE_FAQS.slice(0, 4)} />
         <Link href="/how-it-works#faq" className={`${more} mt-8`}>
