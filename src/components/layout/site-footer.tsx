@@ -1,8 +1,25 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import { getFeedback } from "@/lib/feedback-data";
 import { TIERS } from "@/lib/services";
 
 const col = "font-hud text-xs font-bold uppercase tracking-[0.25em] text-neon-lime";
 const link = "flex min-h-9 items-center text-sm text-ink-dim transition-colors hover:text-neon-cyan";
+
+async function FooterDiscord() {
+  const { discord } = await getFeedback();
+  const href = discord.invite;
+  if (!href && !discord.handle) return null;
+  return (
+    <li>
+      {href ? (
+        <a href={href} target="_blank" rel="noopener noreferrer" className={link}>Discord{discord.handle ? `: @${discord.handle}` : ""}</a>
+      ) : (
+        <span className={link}>Discord: @{discord.handle}</span>
+      )}
+    </li>
+  );
+}
 
 export function SiteFooter() {
   return (
@@ -40,6 +57,7 @@ export function SiteFooter() {
           <ul className="mt-3">
             {[
               ["Portfolio", "/portfolio"],
+              ["Feedback", "/feedback"],
               ["How it works", "/how-it-works"],
               ["About", "/about"],
               ["Order", "/order"],
@@ -50,6 +68,9 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+            <Suspense fallback={null}>
+              <FooterDiscord />
+            </Suspense>
           </ul>
         </nav>
       </div>

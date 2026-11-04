@@ -55,3 +55,26 @@ values ('portfolio', 'portfolio', true, 52428800,
         array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime'])
 on conflict (id) do update
   set public = true, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+
+-- ---------------------------------------------------------------------------
+-- Feedback / reviews (public can submit -> 'pending'; admin approves) + site settings.
+-- No public policies: only the server (service-role key) reads/writes.
+-- ---------------------------------------------------------------------------
+create table if not exists public.feedback (
+  id             uuid primary key default gen_random_uuid(),
+  created_at     timestamptz not null default now(),
+  status         text not null default 'pending' check (status in ('pending', 'approved')),
+  source         text not null default 'public' check (source in ('public', 'admin')),
+  name           text not null check (char_length(name) between 1 and 80),
+  discord_handle text not null check (char_length(discord_handle) between 2 and 40),
+  rating         int  not null check (rating between 1 and 5),
+  message        text not null check (char_length(message) between 5 and 1000)
+);
+
+create table if not exists public.site_settings (
+  key   text primary key,
+  value text not null default ''
+);
+
+alter table public.feedback enable row level security;
+alter table public.site_settings enable row level security;
