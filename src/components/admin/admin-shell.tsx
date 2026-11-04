@@ -5,10 +5,12 @@ import { useState, useTransition } from "react";
 import { logout, seedDefaultCategories } from "@/app/actions/admin";
 import type { AdminReview, DiscordInfo } from "@/lib/feedback";
 import type { Gallery } from "@/lib/gallery";
+import type { SiteContent } from "@/lib/site-content";
 import { CategoriesPanel } from "./categories-panel";
 import { DiscordPanel } from "./discord-panel";
 import { FeedbackPanel } from "./feedback-panel";
 import { LibraryPanel } from "./library-panel";
+import { SitePanel } from "./site-panel";
 import { UploadPanel } from "./upload-panel";
 import { btn, panel, type Run } from "./ui";
 import { cn } from "@/lib/utils";
@@ -18,12 +20,13 @@ const TABS = [
   { id: "upload", label: "Upload" },
   { id: "library", label: "Library" },
   { id: "categories", label: "Categories" },
+  { id: "site", label: "Site" },
   { id: "feedback", label: "Feedback" },
   { id: "discord", label: "Discord" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 
-export function AdminShell({ gallery, reviews, discord }: { gallery: Gallery; reviews: AdminReview[]; discord: DiscordInfo }) {
+export function AdminShell({ gallery, reviews, discord, site, tickerText }: { gallery: Gallery; reviews: AdminReview[]; discord: DiscordInfo; site: SiteContent; tickerText: string }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("upload");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -62,12 +65,12 @@ export function AdminShell({ gallery, reviews, discord }: { gallery: Gallery; re
             className={cn("relative min-h-11 shrink-0 border-b-2 px-4 font-hud text-xs font-bold uppercase tracking-[0.2em] transition-colors", tab === t.id ? "border-neon-magenta text-ink" : "border-transparent text-ink-dim hover:text-neon-cyan")}
           >
             {t.label}
-            {t.id === "feedback" && pending > 0 && <span className="ml-2 rounded-full bg-neon-magenta px-1.5 py-0.5 text-[0.65rem] text-void-950">{pending}</span>}
+            {t.id === "feedback" && pending > 0 && <span className="ml-2 rounded-full bg-neon-magenta px-1.5 py-0.5 text-[0.65rem] text-white">{pending}</span>}
           </button>
         ))}
       </div>
 
-      {msg && <p role="status" className={cn("mt-4 border-l-2 px-3 py-2 text-sm", msg.ok ? "border-neon-lime text-neon-lime" : "border-neon-magenta text-neon-magenta")}>{msg.text}</p>}
+      {msg && <p role="status" className={cn("mt-4 border-l-2 px-3 py-2 text-sm", msg.ok ? "border-emerald-400 text-emerald-400" : "border-neon-magenta text-neon-magenta")}>{msg.text}</p>}
 
       {!saved && (tab === "upload" || tab === "library" || tab === "categories") && (
         <section className={panel + " mt-6 border-neon-amber/60"}>
@@ -80,6 +83,7 @@ export function AdminShell({ gallery, reviews, discord }: { gallery: Gallery; re
         {tab === "upload" && <UploadPanel gallery={gallery} saved={saved} notify={notify} onDone={() => { router.refresh(); setTab("library"); }} />}
         {tab === "library" && <LibraryPanel gallery={gallery} saved={saved} run={run} busy={busy} notify={notify} refresh={() => router.refresh()} />}
         {tab === "categories" && <CategoriesPanel gallery={gallery} saved={saved} run={run} busy={busy} />}
+        {tab === "site" && <SitePanel site={site} tickerText={tickerText} run={run} busy={busy} notify={notify} refresh={() => router.refresh()} />}
         {tab === "feedback" && <FeedbackPanel reviews={reviews} run={run} busy={busy} />}
         {tab === "discord" && <DiscordPanel discord={discord} run={run} busy={busy} />}
       </div>

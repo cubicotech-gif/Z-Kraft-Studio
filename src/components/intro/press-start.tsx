@@ -2,15 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import { useSound } from "@/components/fx/sound-provider";
+import { LogoMark } from "@/components/layout/logo-mark";
 
 const DURATION_MS = 1600; // hard cap is ~2s (CSS failsafe in globals.css)
 
 /**
- * "Press Start" loader. Visible only when the head script set html[data-intro]
+ * Loading screen (logo + progress line). Visible only when the head script set html[data-intro]
  * (first visit this session, motion allowed). Skippable by tap, any key, or the button.
  * Pure-CSS bar, so there is no animation JS; JS only handles skip + remembering the visit.
  */
-export function PressStart() {
+export function PressStart({ logo }: { logo?: string }) {
   const root = useRef<HTMLDivElement>(null);
   const { play } = useSound();
 
@@ -50,30 +51,26 @@ export function PressStart() {
       className="intro scanlines fixed inset-0 z-[100] grid place-items-center bg-void-950 px-6"
     >
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-neon-grid" />
-      <div className="relative w-full max-w-sm">
-        <p className="font-hud text-xs font-semibold tracking-[0.35em] text-neon-lime">{"// SYSTEM BOOT"}</p>
-        <h2 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">
-          Z KRAFT<span className="text-neon-magenta">.</span>
+      <div className="relative grid w-full max-w-sm justify-items-center text-center">
+        {logo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={logo} alt="" className="intro-logo h-20 w-auto max-w-56 object-contain" />
+        ) : (
+          <LogoMark className="intro-logo size-20 text-neon-magenta" />
+        )}
+        <h2 className="mt-5 font-display text-2xl font-extrabold uppercase tracking-[0.2em] text-ink">
+          Z Kraft<span className="text-neon-magenta">.</span>
         </h2>
-        <p className="mt-1 font-hud text-sm tracking-[0.3em] text-neon-cyan">
-          PRESS START<span className="animate-blink">_</span>
-        </p>
-
-        <div className="mt-8 flex items-center gap-3">
-          <div className="chamfer chamfer-sm relative h-4 flex-1 bg-void-800 p-[3px]">
-            <div className="intro-fill h-full w-0 bg-[repeating-linear-gradient(90deg,var(--neon-cyan)_0_8px,transparent_8px_11px)] shadow-[0_0_14px_var(--neon-cyan)]" />
-          </div>
-          <span className="intro-pct w-12 text-right font-hud text-sm font-semibold tabular-nums text-ink" />
+        <div className="mt-8 h-0.5 w-56 overflow-hidden bg-void-700">
+          <div className="intro-fill h-full w-0 bg-neon-magenta shadow-[0_0_12px_var(--neon-magenta)]" />
         </div>
-
         <button
           type="button"
           data-no-arrow
-          className="mt-10 min-h-11 border border-void-600 px-4 font-hud text-xs font-semibold tracking-[0.25em] text-ink-dim transition-colors hover:border-neon-cyan hover:text-neon-cyan"
+          className="mt-10 min-h-11 border border-void-600 px-5 font-hud text-xs font-semibold uppercase tracking-[0.25em] text-ink-dim transition-colors hover:border-neon-cyan hover:text-neon-cyan"
         >
-          SKIP ▸
+          Skip
         </button>
-        <p className="mt-3 font-hud text-[0.7rem] tracking-[0.2em] text-ink-dim/60">TAP OR PRESS ANY KEY</p>
       </div>
     </div>
   );

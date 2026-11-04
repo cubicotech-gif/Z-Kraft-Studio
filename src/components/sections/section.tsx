@@ -20,7 +20,7 @@ export function Section({
 }) {
   const titleId = id ? `${id}-title` : undefined;
   return (
-    <section id={id} aria-labelledby={title ? titleId : undefined} className={cn("scroll-mt-16 px-4 py-16 sm:px-6 sm:py-24", bordered && "border-t border-void-700", className)}>
+    <section id={id} aria-labelledby={title ? titleId : undefined} className={cn("scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24", bordered && "border-t border-void-700", className)}>
       <div className="mx-auto max-w-6xl">
         {kicker && <p className="font-hud text-xs font-semibold tracking-[0.3em] text-neon-lime">{kicker}</p>}
         {title && (

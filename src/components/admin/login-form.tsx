@@ -26,7 +26,7 @@ export function LoginForm() {
       </label>
       <input id="pw" name="password" type="password" autoComplete="current-password" required className="min-h-11 border border-void-600 bg-void-900 px-3 text-base outline-none focus:border-neon-cyan" />
       {error && <p role="alert" className="text-sm text-neon-magenta">{error}</p>}
-      <button disabled={pending} className="min-h-11 bg-neon-magenta px-4 font-hud text-sm font-bold uppercase tracking-[0.2em] text-void-950 disabled:opacity-60">
+      <button disabled={pending} className="min-h-11 bg-neon-magenta px-4 font-hud text-sm font-bold uppercase tracking-[0.2em] text-white disabled:opacity-60">
         {pending ? "Checking…" : "Log in"}
       </button>
     </form>

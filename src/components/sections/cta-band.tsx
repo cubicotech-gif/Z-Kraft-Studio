@@ -1,9 +1,17 @@
+import { Suspense } from "react";
+import { SiteMedia } from "./site-media";
 import { LeverButton } from "@/components/ui/lever-button";
 
 /** Closing call to action with the pull-down lever. */
 export function CtaBand({ href = "/order", title = "Ready to start your quest?", text = "Four quick steps. No account needed." }: { href?: string; title?: string; text?: string }) {
   return (
     <section className="relative isolate overflow-hidden border-t border-void-700 px-4 py-20 sm:px-6 sm:py-28">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-20 opacity-25">
+        <Suspense fallback={null}>
+          <SiteMedia slot="cta" className="size-full object-cover" />
+        </Suspense>
+      </div>
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,var(--void-950),transparent_40%,var(--void-950))]" />
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-neon-grid" />
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(50%_70%_at_50%_100%,color-mix(in_oklab,var(--neon-magenta)_22%,transparent),transparent)]" />
       <div className="mx-auto flex max-w-6xl flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">

@@ -37,7 +37,7 @@ export function ScrollHealthBar() {
   }, []);
 
   return (
-    <div ref={wrap} aria-hidden data-level="high" className="group relative h-1.5 bg-void-800">
+    <div ref={wrap} aria-hidden data-level="high" className="group relative h-1 bg-void-800">
       <div
         ref={fill}
         style={{ "--hp": 1 } as React.CSSProperties}

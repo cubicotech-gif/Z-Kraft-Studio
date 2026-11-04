@@ -3,35 +3,35 @@
 
 /* ------------------------------------------------------------------
    Z KRAFT STUDIO — design tokens
-   Dark neon + angular cyber-HUD (chamfered corners, thin neon lines). Original palette; no borrowed game UI.
+   Dark ink-purple with one violet accent, bold wide headlines, serif body, rough brushed edges. Original; no borrowed game UI.
    ------------------------------------------------------------------ */
 
 :root {
   color-scheme: dark;
 
   /* surfaces ("the void") */
-  --void-950: #07050f;
-  --void-900: #0d0a1c;
-  --void-800: #150f2b;
-  --void-700: #20173f;
-  --void-600: #2e2358;
+  --void-950: #0b0810;
+  --void-900: #130e1b;
+  --void-800: #1b1526;
+  --void-700: #261d35;
+  --void-600: #3a2e52;
 
   /* neon */
-  --neon-magenta: #ff2bd6;
-  --neon-cyan: #22e6ff;
-  --neon-lime: #b6ff3c;
-  --neon-violet: #8b5cff;
-  --neon-amber: #ffb020;
+  --neon-magenta: #7c45e0; /* primary violet */
+  --neon-cyan: #b69bff; /* soft lilac accent */
+  --neon-lime: #b69bff; /* kicker text (lilac) */
+  --neon-violet: #6a3dc4;
+  --neon-amber: #e9b44c;
 
   /* loot rarity tiers */
-  --rarity-common: #9aa4c4;
-  --rarity-rare: #3aa0ff;
-  --rarity-epic: #b052ff;
-  --rarity-legendary: #ffb020;
+  --rarity-common: #a8a2b8;
+  --rarity-rare: #5aa4f0;
+  --rarity-epic: #a45cf0;
+  --rarity-legendary: #e9b44c;
 
   /* text */
-  --ink: #f2ecff;
-  --ink-dim: #a99fd0;
+  --ink: #f4f0fa;
+  --ink-dim: #b3aac4;
 
   /* shadcn/ui semantic tokens (mapped onto the palette above) */
   --background: var(--void-950);
@@ -52,7 +52,7 @@
   --border: var(--void-600);
   --input: var(--void-700);
   --ring: var(--neon-cyan);
-  --radius: 0.125rem; /* HUD UI: near-square; shape comes from .chamfer */
+  --radius: 0.125rem; /* near-square; the rough edge shape comes from .chamfer */
 }
 
 @theme inline {
@@ -98,9 +98,9 @@
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);
 
-  --font-sans: var(--f-body), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--f-display), ui-monospace, monospace;
-  --font-hud: var(--f-hud), ui-monospace, monospace;
+  --font-sans: var(--f-body), ui-serif, Georgia, serif;
+  --font-display: var(--f-display), ui-sans-serif, system-ui, sans-serif;
+  --font-hud: var(--f-hud), ui-sans-serif, system-ui, sans-serif;
 
   /* rarity + neon glows */
   --shadow-glow-magenta: 0 0 0 2px var(--neon-magenta), 0 0 24px 2px color-mix(in oklab, var(--neon-magenta) 55%, transparent);
@@ -132,26 +132,31 @@
     font-family: var(--font-sans);
     overflow-x: hidden;
   }
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
   :focus-visible {
     outline: 2px solid var(--neon-cyan);
     outline-offset: 3px;
   }
   ::selection {
     background: var(--neon-magenta);
-    color: var(--void-950);
+    color: #fff;
   }
 }
 
 /* ---------------- HUD utilities ---------------- */
 @layer utilities {
-  /* angled corners (top-right + bottom-left cut). NOTE: clip-path also clips
+  /* rough, hand-inked edge (replaces the old angled corners). NOTE: clip-path also clips
      box-shadow/outline, so put glows on a wrapper via filter: drop-shadow. */
   .chamfer {
-    --cut: 14px;
-    clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
+    clip-path: polygon(0.0% 1px, 7.1% 0px, 14.3% 2px, 21.4% 0px, 28.6% 0px, 35.7% 4px, 42.9% 0px, 50.0% 1px, 57.1% 4px, 64.3% 0px, 71.4% 4px, 78.6% 0px, 85.7% 0px, 92.9% 0px, calc(100% - 2px) 0.0%, calc(100% - 2px) 7.1%, calc(100% - 0px) 14.3%, calc(100% - 0px) 21.4%, calc(100% - 0px) 28.6%, calc(100% - 4px) 35.7%, calc(100% - 2px) 42.9%, calc(100% - 0px) 50.0%, calc(100% - 4px) 57.1%, calc(100% - 0px) 64.3%, calc(100% - 0px) 71.4%, calc(100% - 4px) 78.6%, calc(100% - 0px) 85.7%, calc(100% - 4px) 92.9%, 100.0% calc(100% - 4px), 92.9% calc(100% - 2px), 85.7% calc(100% - 0px), 78.6% calc(100% - 0px), 71.4% calc(100% - 0px), 64.3% calc(100% - 4px), 57.1% calc(100% - 0px), 50.0% calc(100% - 1px), 42.9% calc(100% - 2px), 35.7% calc(100% - 0px), 28.6% calc(100% - 4px), 21.4% calc(100% - 0px), 14.3% calc(100% - 4px), 7.1% calc(100% - 1px), 4px 100.0%, 0px 92.9%, 0px 85.7%, 4px 78.6%, 4px 71.4%, 0px 64.3%, 1px 57.1%, 0px 50.0%, 4px 42.9%, 0px 35.7%, 4px 28.6%, 0px 21.4%, 4px 14.3%, 0px 7.1%);
   }
   .chamfer-sm {
-    --cut: 8px;
+    clip-path: polygon(0.0% 2px, 10.0% 3px, 20.0% 2px, 30.0% 2px, 40.0% 3px, 50.0% 3px, 60.0% 0px, 70.0% 0px, 80.0% 3px, 90.0% 2px, calc(100% - 3px) 0.0%, calc(100% - 0px) 10.0%, calc(100% - 0px) 20.0%, calc(100% - 2px) 30.0%, calc(100% - 1px) 40.0%, calc(100% - 0px) 50.0%, calc(100% - 0px) 60.0%, calc(100% - 3px) 70.0%, calc(100% - 0px) 80.0%, calc(100% - 3px) 90.0%, 100.0% calc(100% - 2px), 90.0% calc(100% - 2px), 80.0% calc(100% - 3px), 70.0% calc(100% - 0px), 60.0% calc(100% - 3px), 50.0% calc(100% - 0px), 40.0% calc(100% - 3px), 30.0% calc(100% - 0px), 20.0% calc(100% - 0px), 10.0% calc(100% - 0px), 0px 100.0%, 0px 90.0%, 3px 80.0%, 0px 70.0%, 2px 60.0%, 1px 50.0%, 2px 40.0%, 3px 30.0%, 0px 20.0%, 3px 10.0%);
   }
   /* loot-rarity glow: set --r (colour) and --g (blur px) on the element. Filter, not
      box-shadow, so it follows the clipped (chamfered) outline. */
@@ -176,31 +181,45 @@
   .text-glow-cyan {
     text-shadow: 0 0 18px color-mix(in oklab, var(--neon-cyan) 70%, transparent);
   }
-  /* hero background: neon grid fading to void. CSS only => no LCP cost */
+  /* page backdrop: violet fog fading to ink. CSS only => no LCP cost */
   .bg-neon-grid {
     background-image:
-      linear-gradient(to right, color-mix(in oklab, var(--neon-violet) 18%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklab, var(--neon-violet) 18%, transparent) 1px, transparent 1px);
-    background-size: 32px 32px;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 75%);
+      radial-gradient(60% 50% at 18% 10%, color-mix(in oklab, var(--neon-magenta) 20%, transparent), transparent),
+      radial-gradient(45% 40% at 88% 75%, color-mix(in oklab, var(--neon-violet) 18%, transparent), transparent);
+    mask-image: none;
   }
+  /* fine film grain */
   .scanlines::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.12) 2px 3px);
-    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.5'/></svg>");
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+  }
+  /* brush-stroke label pill behind small caps text */
+  .pill-brush {
+    position: relative;
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    color: #fff;
+    background: var(--neon-magenta);
+    clip-path: polygon(0 20%, 3% 0, 12% 12%, 30% 0, 55% 10%, 78% 0, 94% 8%, 100% 0, 99% 55%, 100% 100%, 82% 90%, 60% 100%, 38% 88%, 15% 100%, 3% 92%, 0 100%);
+  }
+  /* announcement ticker */
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker 48s linear infinite;
+  }
+  .ticker:hover .ticker-track {
+    animation-play-state: paused;
   }
 }
-
-/* ---------------- custom cursor (fine pointers only) ---------------- */
-@media (hover: hover) and (pointer: fine) {
-  .hero-arena {
-    cursor: none;
-  }
-  .hero-arena :is(a, button, [data-no-arrow]) {
-    cursor: pointer;
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
   }
 }
 
@@ -217,11 +236,6 @@
 }
 
 /* ---------------- Press Start intro ---------------- */
-@property --pct {
-  syntax: "<integer>";
-  inherits: false;
-  initial-value: 0;
-}
 /* The overlay only exists visually when the head script sets html[data-intro]. */
 html:not([data-intro]) .intro {
   display: none;
@@ -234,24 +248,21 @@ html:not([data-intro]) .intro {
 .intro.is-leaving {
   opacity: 0;
 }
+.intro-logo {
+  animation: intro-logo 1.2s ease-out both;
+}
+@keyframes intro-logo {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
 .intro-fill {
-  animation: intro-fill 1.55s steps(24, end) forwards;
-}
-.intro-pct {
-  animation: intro-pct 1.55s steps(24, end) forwards;
-  counter-reset: pct var(--pct);
-}
-.intro-pct::after {
-  content: counter(pct) "%";
+  animation: intro-fill 1.55s ease-in-out forwards;
 }
 @keyframes intro-fill {
   to {
     width: 100%;
-  }
-}
-@keyframes intro-pct {
-  to {
-    --pct: 100;
   }
 }
 @keyframes intro-out {

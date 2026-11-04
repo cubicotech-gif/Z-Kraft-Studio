@@ -88,7 +88,7 @@ export function UploadField({
                   )}
                   {it.status === "done" && (
                     <>
-                      <Check className="size-3.5 text-neon-lime" aria-hidden /> Ready
+                      <Check className="size-3.5 text-emerald-400" aria-hidden /> Ready
                     </>
                   )}
                   {it.status === "error" && (it.error ?? "Upload failed")}
