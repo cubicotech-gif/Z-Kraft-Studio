@@ -19,7 +19,7 @@ export async function loadGallery(): Promise<Gallery> {
   if (!supabase) return { categories: defaultCategories(), items: [] };
   const [cats, items] = await Promise.all([
     supabase.from("portfolio_categories").select("id, slug, name").order("sort_order").order("created_at"),
-    supabase.from("portfolio_items").select("id, category_id, title, path, media_type").order("created_at", { ascending: false }),
+    supabase.from("portfolio_items").select("*").order("created_at", { ascending: false }),
   ]);
   if (cats.error || items.error || !cats.data?.length) {
     if (cats.error || items.error) console.error("[gallery] read failed:", cats.error ?? items.error);
@@ -32,6 +32,10 @@ export async function loadGallery(): Promise<Gallery> {
       id: r.id,
       categoryId: r.category_id,
       title: r.title,
+      description: r.description ?? "",
+      fit: r.fit === "contain" ? "contain" : "cover",
+      focusX: r.focus_x ?? 50,
+      focusY: r.focus_y ?? 50,
       src: base.getPublicUrl(r.path).data.publicUrl,
       type: r.media_type,
     })),

@@ -5,7 +5,7 @@ import { Play } from "lucide-react";
 import { ScrollReveal } from "@/components/fx/scroll-reveal";
 import { useSound } from "@/components/fx/sound-provider";
 import { prefersReducedMotion } from "@/components/fx/use-reduced-motion";
-import type { Gallery } from "@/lib/gallery";
+import { tileMediaStyle, type Gallery } from "@/lib/gallery";
 import { LootViewer, type Active } from "./loot-viewer";
 import { categoryColor } from "./rarity";
 
@@ -65,14 +65,14 @@ export function InventoryGrid({ gallery }: { gallery: Gallery }) {
                     <span className="chamfer chamfer-sm relative block size-full bg-void-900">
                       {item.type === "video" ? (
                         <>
-                          <video src={item.src} muted playsInline preload="metadata" aria-hidden className="size-full object-cover" />
+                          <video src={item.src} muted playsInline preload="metadata" aria-hidden className="size-full" style={tileMediaStyle(item)} />
                           <span aria-hidden className="absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-void-950/80 text-[var(--r)]">
                             <Play className="size-3.5 fill-current" />
                           </span>
                         </>
                       ) : (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={item.src} alt="" loading="lazy" decoding="async" className="size-full object-cover" />
+                        <img src={item.src} alt="" loading="lazy" decoding="async" className="size-full" style={tileMediaStyle(item)} />
                       )}
                       <span className="absolute inset-x-0 bottom-0 truncate bg-void-950/80 px-2 py-1.5 text-center font-hud text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[var(--r)]">
                         {item.title}

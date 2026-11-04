@@ -39,10 +39,10 @@ export async function endSession() {
 }
 
 export async function isAdmin() {
-  const key = secret();
-  if (!key || !process.env.ADMIN_PASSWORD) return false;
+  // Read the cookie first so callers are always request-time, even when env vars are missing at build.
   const v = (await cookies()).get(COOKIE)?.value;
-  if (!v) return false;
+  const key = secret();
+  if (!v || !key || !process.env.ADMIN_PASSWORD) return false;
   const [exp, mac] = v.split(".");
   return !!exp && !!mac && Number(exp) > Date.now() && safeEqual(mac, sign(exp, key));
 }

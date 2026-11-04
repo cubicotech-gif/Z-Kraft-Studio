@@ -50,6 +50,19 @@ export async function adminAddFeedback(raw: unknown): Promise<FeedbackResult> {
   return { ok: true, message: "Feedback added." };
 }
 
+export async function adminUpdateFeedback(id: string, raw: unknown): Promise<FeedbackResult> {
+  if (!(await isAdmin())) return { ok: false, message: DENIED };
+  const input = parse(raw);
+  const fieldErrors = validateFeedback(input);
+  if (Object.keys(fieldErrors).length) return { ok: false, message: Object.values(fieldErrors)[0] ?? "Invalid.", fieldErrors };
+  const db = getAdmin();
+  if (!db) return { ok: false, message: OFFLINE };
+  const { error } = await db.from("feedback").update({ name: input.name, discord_handle: input.discord, rating: input.rating, message: input.message }).eq("id", id);
+  if (error) return { ok: false, message: error.message };
+  updateTag(FEEDBACK_TAG);
+  return { ok: true, message: "Saved." };
+}
+
 export async function adminSetFeedbackStatus(id: string, status: "pending" | "approved"): Promise<FeedbackResult> {
   if (!(await isAdmin())) return { ok: false, message: DENIED };
   if (status !== "pending" && status !== "approved") return { ok: false, message: "Invalid status." };

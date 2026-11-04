@@ -2,22 +2,13 @@ import { Suspense } from "react";
 import { isAdmin } from "@/lib/admin-auth";
 import { loadGallery } from "@/lib/gallery-data";
 import { loadFeedbackAdmin } from "@/lib/feedback-data";
-import { FeedbackAdmin } from "@/components/admin/feedback-admin";
 import { LoginForm } from "@/components/admin/login-form";
-import { AdminManager } from "@/components/admin/admin-manager";
+import { AdminShell } from "@/components/admin/admin-shell";
 
 async function Gate() {
   if (!(await isAdmin())) return <LoginForm />;
   const [gallery, feedback] = await Promise.all([loadGallery(), loadFeedbackAdmin()]);
-  return (
-    <>
-      <AdminManager gallery={gallery} />
-      <h2 className="mt-16 border-t border-void-700 pt-10 font-display text-3xl font-extrabold tracking-tight">Feedback &amp; Discord</h2>
-      <div className="mt-6">
-        <FeedbackAdmin reviews={feedback.reviews} discord={feedback.discord} />
-      </div>
-    </>
-  );
+  return <AdminShell gallery={gallery} reviews={feedback.reviews} discord={feedback.discord} />;
 }
 
 export default function AdminPage() {

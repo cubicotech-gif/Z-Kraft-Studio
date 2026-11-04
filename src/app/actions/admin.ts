@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import { updateTag } from "next/cache";
 import { adminConfigured, endSession, isAdmin, passwordMatches, startSession } from "@/lib/admin-auth";
 import { getAdmin } from "@/lib/supabase/server";
-import { GALLERY_BUCKET, GALLERY_LIMITS, GALLERY_PATH, DEFAULT_CATEGORY_NAMES, slugify } from "@/lib/gallery";
+import { GALLERY_BUCKET, GALLERY_LIMITS, GALLERY_PATH, DEFAULT_CATEGORY_NAMES, TEXT_LIMITS, cleanDisplay, slugify, type Display } from "@/lib/gallery";
 import { GALLERY_TAG } from "@/lib/gallery-data";
 
 type Failure = { ok: false; message: string };
@@ -98,15 +98,58 @@ export async function createGalleryUploadUrls(files: { name: string; type: strin
   }
 }
 
-export async function addGalleryItems(categoryId: string, items: { path: string; title: string; type: "image" | "video" }[]): Promise<AdminResult> {
+export type NewItem = { path: string; title: string; description: string; type: "image" | "video" } & Display;
+
+const text = (v: unknown, max: number) => String(v ?? "").trim().slice(0, max);
+
+export async function addGalleryItems(categoryId: string, items: NewItem[]): Promise<AdminResult> {
   const g = await guard();
   if (g.err) return g.err;
   if (!Array.isArray(items) || !items.length || items.some((i) => !GALLERY_PATH.test(i?.path) || (i.type !== "image" && i.type !== "video"))) return { ok: false, message: "Invalid upload." };
-  const rows = items.map((i) => ({ category_id: categoryId, path: i.path, media_type: i.type, title: String(i.title ?? "").trim().slice(0, 120) || "Untitled" }));
+  const rows = items.map((i) => {
+    const d = cleanDisplay(i);
+    return { category_id: categoryId, path: i.path, media_type: i.type, title: text(i.title, TEXT_LIMITS.title) || "Untitled", description: text(i.description, TEXT_LIMITS.description), fit: d.fit, focus_x: d.focusX, focus_y: d.focusY };
+  });
   const { error } = await g.db.from("portfolio_items").insert(rows);
   if (error) return { ok: false, message: error.message };
   updateTag(GALLERY_TAG);
   return { ok: true, message: `${rows.length} added.` };
+}
+
+/** Edit name, description, category and display settings of an existing item. */
+export async function updateGalleryItem(id: string, v: { categoryId: string; title: string; description: string } & Display): Promise<AdminResult> {
+  const g = await guard();
+  if (g.err) return g.err;
+  const d = cleanDisplay(v);
+  const { error } = await g.db.from("portfolio_items").update({ category_id: v.categoryId, title: text(v.title, TEXT_LIMITS.title) || "Untitled", description: text(v.description, TEXT_LIMITS.description), fit: d.fit, focus_x: d.focusX, focus_y: d.focusY }).eq("id", id);
+  if (error) return { ok: false, message: error.message };
+  updateTag(GALLERY_TAG);
+  return { ok: true, message: "Saved." };
+}
+
+/** Swap the file of an item (new file already uploaded via signed URL). The old file is deleted. */
+export async function replaceGalleryFile(id: string, path: string, type: "image" | "video"): Promise<AdminResult> {
+  const g = await guard();
+  if (g.err) return g.err;
+  if (!GALLERY_PATH.test(path) || (type !== "image" && type !== "video")) return { ok: false, message: "Invalid upload." };
+  const { data: old } = await g.db.from("portfolio_items").select("path").eq("id", id).single();
+  const { error } = await g.db.from("portfolio_items").update({ path, media_type: type, fit: "cover", focus_x: 50, focus_y: 50 }).eq("id", id);
+  if (error) return { ok: false, message: error.message };
+  if (old?.path && old.path !== path) await g.db.storage.from(GALLERY_BUCKET).remove([old.path]);
+  updateTag(GALLERY_TAG);
+  return { ok: true, message: "File replaced. Check the display settings." };
+}
+
+export async function renameCategory(id: string, name: string): Promise<AdminResult> {
+  const g = await guard();
+  if (g.err) return g.err;
+  const clean = text(name, 80);
+  const slug = slugify(clean);
+  if (!slug) return { ok: false, message: "Enter a name." };
+  const { error } = await g.db.from("portfolio_categories").update({ name: clean, slug }).eq("id", id);
+  if (error) return { ok: false, message: error.code === "23505" ? "That category already exists." : error.message };
+  updateTag(GALLERY_TAG);
+  return { ok: true, message: "Renamed." };
 }
 
 export async function deleteGalleryItem(id: string): Promise<AdminResult> {
