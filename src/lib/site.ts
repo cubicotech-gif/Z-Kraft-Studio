@@ -6,6 +6,7 @@ export const NAV: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services", children: TIERS.map((t) => ({ label: t.name, href: `/services/${t.slug}` })) },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Artists", href: "/artists" },
   { label: "Feedback", href: "/feedback" },
   { label: "How it works", href: "/how-it-works" },
   { label: "About", href: "/about" },

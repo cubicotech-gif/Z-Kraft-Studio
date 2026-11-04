@@ -29,7 +29,7 @@ export function MobileMenu() {
 
   const row = "flex min-h-12 items-center border-b border-void-700 font-hud text-sm font-semibold uppercase tracking-[0.25em] hover:text-neon-cyan";
   return (
-    <div className="lg:hidden">
+    <div className="xl:hidden">
       <button
         type="button"
         data-no-arrow

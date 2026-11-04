@@ -87,3 +87,25 @@ alter table public.portfolio_items
   add column if not exists fit        text not null default 'cover' check (fit in ('cover', 'contain')),
   add column if not exists focus_x    int  not null default 50 check (focus_x between 0 and 100),
   add column if not exists focus_y    int  not null default 50 check (focus_y between 0 and 100);
+
+-- ---------------------------------------------------------------------------
+-- Feedback attachments (one image or video per feedback) + affiliated artists. Safe to re-run.
+-- ---------------------------------------------------------------------------
+alter table public.feedback
+  add column if not exists media_path text,
+  add column if not exists media_type text check (media_type in ('image', 'video'));
+
+create table if not exists public.artists (
+  id             uuid primary key default gen_random_uuid(),
+  created_at     timestamptz not null default now(),
+  sort_order     int  not null default 0,
+  name           text not null check (char_length(name) between 1 and 80),
+  discord_handle text not null check (char_length(discord_handle) between 2 and 40),
+  specialities   text[] not null default '{}' check (cardinality(specialities) <= 6),
+  bio            text not null default '' check (char_length(bio) <= 400),
+  availability   text not null default 'open' check (availability in ('open', 'busy')),
+  link           text check (char_length(link) <= 200),
+  avatar_path    text,
+  sample_paths   text[] not null default '{}' check (cardinality(sample_paths) <= 3)
+);
+alter table public.artists enable row level security;

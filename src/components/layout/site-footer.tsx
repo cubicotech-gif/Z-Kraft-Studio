@@ -57,6 +57,7 @@ export function SiteFooter() {
           <ul className="mt-3">
             {[
               ["Portfolio", "/portfolio"],
+              ["Artists", "/artists"],
               ["Feedback", "/feedback"],
               ["How it works", "/how-it-works"],
               ["About", "/about"],

@@ -1,12 +1,16 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { getAdmin } from "@/lib/supabase/server";
+import { GALLERY_BUCKET } from "@/lib/gallery";
 import type { AdminReview, DiscordInfo, Review } from "@/lib/feedback";
 
 export const FEEDBACK_TAG = "feedback";
 
-type Row = { id: string; name: string; discord_handle: string; rating: number; message: string; created_at: string; status: "pending" | "approved"; source: "public" | "admin" };
-const toReview = (r: Row): Review => ({ id: r.id, name: r.name, discord: r.discord_handle, rating: r.rating, message: r.message, createdAt: r.created_at });
+type Row = { id: string; name: string; discord_handle: string; rating: number; message: string; created_at: string; status: "pending" | "approved"; source: "public" | "admin"; media_path: string | null; media_type: "image" | "video" | null };
+const toReview = (r: Row): Review => {
+  const media = r.media_path && r.media_type ? { src: getAdmin()!.storage.from(GALLERY_BUCKET).getPublicUrl(r.media_path).data.publicUrl, type: r.media_type } : undefined;
+  return { id: r.id, name: r.name, discord: r.discord_handle, rating: r.rating, message: r.message, createdAt: r.created_at, media };
+};
 
 export async function loadDiscord(): Promise<DiscordInfo> {
   const db = getAdmin();

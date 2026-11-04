@@ -25,7 +25,7 @@ export function SiteHeader() {
           <Link
             href="/order"
             data-no-arrow
-            className="chamfer chamfer-sm inline-flex h-11 items-center bg-neon-magenta px-5 font-hud text-xs font-bold uppercase tracking-[0.16em] text-white transition-[filter] hover:brightness-125 active:brightness-90"
+            className="chamfer chamfer-sm inline-flex h-11 items-center whitespace-nowrap bg-neon-magenta px-5 font-hud text-xs font-bold uppercase tracking-[0.16em] text-white transition-[filter] hover:brightness-125 active:brightness-90"
           >
             <span className="sm:hidden">Quest</span>
             <span className="hidden sm:inline">Start quest</span>
