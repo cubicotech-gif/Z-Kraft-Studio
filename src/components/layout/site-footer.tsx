@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getFeedback } from "@/lib/feedback-data";
 import { Brand } from "./brand";
 import { TIERS } from "@/lib/services";
+import { ContactList } from "@/components/contact/contact-links";
 
 const col = "font-hud text-xs font-bold uppercase tracking-[0.25em] text-neon-lime";
 const link = "flex min-h-9 items-center text-sm text-ink-dim transition-colors hover:text-neon-cyan";
@@ -25,7 +26,7 @@ async function FooterDiscord() {
 export function SiteFooter() {
   return (
     <footer className="relative mt-24 border-t border-void-700 bg-void-950">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.3fr_0.9fr_0.9fr_1.3fr]">
         <div>
           <Link href="/" aria-label="Z Kraft Studio, home" className="inline-flex">
             <Brand />
@@ -61,6 +62,7 @@ export function SiteFooter() {
               ["Feedback", "/feedback"],
               ["How it works", "/how-it-works"],
               ["About", "/about"],
+              ["Contact", "/contact"],
               ["Order", "/order"],
             ].map(([label, href]) => (
               <li key={href}>
@@ -74,6 +76,10 @@ export function SiteFooter() {
             </Suspense>
           </ul>
         </nav>
+        <address className="not-italic">
+          <p className={col}>Contact</p>
+          <ContactList linkClass={link} />
+        </address>
       </div>
       <div className="border-t border-void-700">
         <p className="mx-auto max-w-6xl px-4 py-5 font-hud text-xs tracking-[0.2em] text-ink-dim sm:px-6">

@@ -51,7 +51,7 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 ## Site map (traditional multi-page; every route is static)
 `/` home (hero, how it works, services, featured loot, why us, FAQ, CTA) · `/services` index ·
 `/services/[slug]` x4 (single-emote, emote-pack, badges-and-panels, full-illustration; one template, content from `src/lib/services.ts`) ·
-`/portfolio` (inventory + loot-crate lightbox) · `/artists` (affiliated artists, admin-managed) · `/feedback` (reviews wall; public submit with approval, optional image/video) · `/how-it-works` (+ FAQ) · `/about` · `/order` (Quest Log; `?tier=<common|rare|epic|legendary>` preselects and jumps to step 2) · 404, sitemap, robots.
+`/portfolio` (inventory + loot-crate lightbox) · `/artists` (affiliated artists, admin-managed) · `/feedback` (reviews wall; public submit with approval, optional image/video) · `/contact` (phone, WhatsApp, email, address; details live in `src/lib/contact.ts`) · `/how-it-works` (+ FAQ) · `/about` · `/order` (Quest Log; `?tier=<common|rare|epic|legendary>` preselects and jumps to step 2) · 404, sitemap, robots.
 Every page ends in a `CtaBand` (lever) and the header always shows "Start quest" -> `/order`.
 Note: Cache Components keeps visited routes mounted-but-hidden, so tests must select visible elements (`:visible`). Unknown `/services/<x>` renders the 404 UI with `noindex` but HTTP 200 (`dynamicParams` is not allowed with cacheComponents).
 

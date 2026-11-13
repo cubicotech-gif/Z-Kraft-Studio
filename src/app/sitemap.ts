@@ -5,6 +5,6 @@ import { TIERS } from "@/lib/services";
 const base = process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ["", "/services", ...TIERS.map((t) => `/services/${t.slug}`), "/portfolio", "/feedback", "/artists", "/how-it-works", "/about", "/order"];
+  const paths = ["", "/services", ...TIERS.map((t) => `/services/${t.slug}`), "/portfolio", "/feedback", "/artists", "/contact", "/how-it-works", "/about", "/order"];
   return paths.map((p) => ({ url: `${base}${p}` }));
 }
