@@ -31,7 +31,7 @@ Read `node_modules/next/dist/docs/` before using unfamiliar APIs.
 - Surfaces `void-950…600`; text `ink`, `ink-dim`
 - Colour tokens keep their old names but are re-valued: `neon-magenta` = primary violet (use white text on it), `neon-cyan` = soft lilac accent/focus, `neon-lime` = lilac kicker text, `neon-violet`, `neon-amber` (gold). Success states use `emerald-400`
 - Rarity: `common`, `rare`, `epic`, `legendary`, each with a `shadow-glow-*` utility
-- Fonts: `font-display` (Lexend, h1/h2 are uppercased in globals), `font-hud` (Kumbh Sans, labels/buttons), `font-sans` (Source Serif 4, body). Syne fails to load under Turbopack here; keep Lexend
+- Fonts: `font-display` (Lexend, h1/h2 are uppercased in globals), `font-hud` (Kumbh Sans, labels/buttons), `font-sans` (Source Serif 4, body). Fonts are SELF-HOSTED via `next/font/local` (`src/app/fonts/`, latin subset): `next/font/google` fails on Vercel builds with Turbopack ("queries have exactly one entry"), so do not switch back to it
 - Helpers: `chamfer` / `chamfer-sm` (rough inked edge via clip-path; clip-path clips shadows, so use a drop-shadow filter on a wrapper), `pill-brush`, `bg-neon-grid` (violet fog), `scanlines` (film grain), ticker classes
 - shadcn semantic vars (`--primary`, `--border`, …) are mapped onto this palette. Dark theme only.
 

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Lexend, Kumbh_Sans, Source_Serif_4 } from "next/font/google";
+import localFont from "next/font/local";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SoundProvider } from "@/components/fx/sound-provider";
@@ -8,9 +8,10 @@ import { IntroLoader } from "@/components/intro/intro-loader";
 import { SmoothScroll } from "@/components/fx/smooth-scroll";
 import "./globals.css";
 
-const body = Source_Serif_4({ variable: "--f-body", subsets: ["latin"], display: "swap" });
-const display = Lexend({ variable: "--f-display", subsets: ["latin"], weight: ["600", "700", "800"], display: "swap" });
-const hud = Kumbh_Sans({ variable: "--f-hud", subsets: ["latin"], weight: ["500", "600", "700", "800"], display: "swap" });
+// Self-hosted (latin subset, variable weight): no Google Fonts request at build or runtime.
+const body = localFont({ src: "./fonts/source-serif-4-latin-wght-normal.woff2", variable: "--f-body", weight: "200 900", display: "swap" });
+const display = localFont({ src: "./fonts/lexend-latin-wght-normal.woff2", variable: "--f-display", weight: "100 900", display: "swap" });
+const hud = localFont({ src: "./fonts/kumbh-sans-latin-wght-normal.woff2", variable: "--f-hud", weight: "100 900", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "Z Kraft Studio — Custom art for gamers & streamers", template: "%s | Z Kraft Studio" },
